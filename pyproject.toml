@@ -8,6 +8,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+websockets = "^12.0"
+pydantic = "^2.7.4"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -15,7 +17,28 @@ coverage = "^7.5.3"
 pytest = "^8.2.2"
 mypy = "^1.10.0"
 wemake-python-styleguide = "^0.19.2"
+flake8-pyproject = "^1.2.3"
+autopep8 = "^2.3.0"
+isort = "^5.13.2"
+buttplug-py = "^0.2.0"
+datamodel-code-generator = { extras = ["http"], version = "^0.25.7" }
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.flake8]
+max-line-length = 666 # line length limit is useless when you have John and Cognitive Complexity limits
+extend-ignore = "WPS305"
+
+[tool.isort]
+include_trailing_comma = true
+use_parentheses = true
+multi_line_output = 3
+
+[tool.autopep8]
+max-line-length = 666
+
+[tool.mypy]
+strict = true
+plugins = ["pydantic.mypy"]
