@@ -6,12 +6,18 @@ from typing import AsyncContextManager
 import websockets
 from pydantic import ValidationError
 
+from nobutt.device import NoButtDevice
 from nobutt.messages import (
+    DeviceList,
+    DeviceListModel2,
     Error,
     MessageSpecV3,
     MessageSpecV3Item,
+    RequestDeviceList,
     RequestServerInfo,
+    RequestServerInfoModel,
     ServerInfo,
+    ServerInfoModel,
 )
 
 logger = logging.getLogger(__name__)
@@ -30,6 +36,7 @@ class NoButtServer:
             port: Port to listen for connections. Default is 12345.
         """
         self.port = port
+        self.devices: list[NoButtDevice] = []
 
     def serve(self) -> AsyncContextManager[websockets.WebSocketServer]:
         """Start the NoButt Server.
@@ -50,11 +57,11 @@ class NoButtServer:
             websocket: Websocket connection.
         """
         async for request in websocket:
-            logger.info(f'<<<: {request}')
+            logger.info(f'<<<: {request!r}')
             try:
                 request_messages = MessageSpecV3.model_validate_json(request)
             except ValidationError as validation_error:
-                logger.error(f'Invalid JSON: {validation_error}')
+                logger.error(f'!!!: {validation_error}')
                 response_messages = [MessageSpecV3Item(
                     Error=Error(
                         Id=0,
@@ -81,24 +88,30 @@ class NoButtServer:
         Returns:
             Response message.
         """
-        match message:
-            case MessageSpecV3Item(request_server_info=RequestServerInfo()):
-                return MessageSpecV3Item(
-                    ServerInfo=ServerInfo(
-                        Id=message.Id,
-                        ServerName='NoButt',
-                        MajorVersion=0,
-                        MinorVersion=1,
-                        BuildVersion=0,
-                        MessageVersion=3,
-                        MaxPingTime=0,
-                    ),
-                )
-            case _:
-                return MessageSpecV3Item(
-                    Error=Error(
-                        Id=0,
-                        ErrorMessage='Unsupported message type',
-                        ErrorCode=3,
-                    ),
-                )
+        if message.request_server_info is not None:
+            return MessageSpecV3Item(
+                ServerInfo=ServerInfoModel(
+                    Id=message.request_server_info.id,
+                    ServerName='NoButt',
+                    MessageVersion=3,
+                    MaxPingTime=0,
+                ),
+            )
+        elif message.request_device_list is not None:
+            return MessageSpecV3Item(
+                DeviceList=DeviceListModel2(
+                    Id=message.request_device_list.root.id,
+                    Devices=[
+                        device.device_spec
+                        for device in self.devices
+                    ],
+                ),
+            )
+
+        return MessageSpecV3Item(
+            Error=Error(
+                Id=0,
+                ErrorMessage='Unsupported message type',
+                ErrorCode=3,
+            ),
+        )

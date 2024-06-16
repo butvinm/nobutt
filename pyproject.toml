@@ -22,14 +22,16 @@ autopep8 = "^2.3.0"
 isort = "^5.13.2"
 buttplug-py = "^0.2.0"
 datamodel-code-generator = { extras = ["http"], version = "^0.25.7" }
+pytest-asyncio = "^0.23.7"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.flake8]
-max-line-length = 666 # line length limit is useless when you have John and Cognitive Complexity limits
+max-line-length = 666                     # line length limit is useless when you have John and Cognitive Complexity limits
 extend-ignore = "WPS305"
+per-file-ignores = ["tests/**/*: WPS442"]
 
 [tool.isort]
 include_trailing_comma = true
@@ -42,3 +44,10 @@ max-line-length = 666
 [tool.mypy]
 strict = true
 plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = "buttplug"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
