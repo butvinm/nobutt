@@ -8,15 +8,11 @@ from pydantic import ValidationError
 
 from nobutt.device import NoButtDevice
 from nobutt.messages import (
-    DeviceList,
+    ClientIdMessage,
     DeviceListModel2,
     Error,
     MessageSpecV3,
     MessageSpecV3Item,
-    RequestDeviceList,
-    RequestServerInfo,
-    RequestServerInfoModel,
-    ServerInfo,
     ServerInfoModel,
 )
 
@@ -29,14 +25,15 @@ class NoButtServer:
     Current implementation only supports v3 of the buttplug.io message protocol.
     """
 
-    def __init__(self, port: int = 12345):
+    def __init__(self, port: int = 12345, devices: list[NoButtDevice] | None = None):
         """Initialize the NoButt Server.
 
         Args:
             port: Port to listen for connections. Default is 12345.
+            devices: List of devices to serve. Default is an empty list.
         """
         self.port = port
-        self.devices: list[NoButtDevice] = []
+        self.devices = devices or []
 
     def serve(self) -> AsyncContextManager[websockets.WebSocketServer]:
         """Start the NoButt Server.
@@ -88,6 +85,7 @@ class NoButtServer:
         Returns:
             Response message.
         """
+        logger.info(f'...: {message}')
         if message.request_server_info is not None:
             return MessageSpecV3Item(
                 ServerInfo=ServerInfoModel(
@@ -107,7 +105,30 @@ class NoButtServer:
                     ],
                 ),
             )
-
+        elif message.start_scanning is not None:
+            return MessageSpecV3Item(
+                Ok=ClientIdMessage(
+                    Id=message.start_scanning.root.id,
+                ),
+            )
+        elif message.stop_scanning is not None:
+            return MessageSpecV3Item(
+                Ok=ClientIdMessage(
+                    Id=message.stop_scanning.root.id,
+                ),
+            )
+        elif message.scalar_cmd is not None:
+            return MessageSpecV3Item(
+                Ok=ClientIdMessage(
+                    Id=message.scalar_cmd.id,
+                ),
+            )
+        elif message.stop_device_cmd is not None:
+            return MessageSpecV3Item(
+                Ok=ClientIdMessage(
+                    Id=message.stop_device_cmd.id,
+                ),
+            )
         return MessageSpecV3Item(
             Error=Error(
                 Id=0,
