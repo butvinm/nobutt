@@ -34,6 +34,7 @@ class NoButtServer:
         """
         self.port = port
         self.devices = devices or []
+        self._ui_connection: websockets.WebSocketServerProtocol | None = None
 
     def serve(self) -> AsyncContextManager[websockets.WebSocketServer]:
         """Start the NoButt Server.
@@ -48,11 +49,44 @@ class NoButtServer:
         return websockets.serve(self._ws_handler, 'localhost', self.port)
 
     async def _ws_handler(self, websocket: websockets.WebSocketServerProtocol) -> None:
-        """Handle and decode messages from the websocket.
+        """Handle websocket connection.
 
         Args:
             websocket: Websocket connection.
+
+        Raises:
+            InvalidURI: If the path is not '/' or '/ui'.
+
+        Returns:
+            Nothing, stupid flake8.
         """
+        if websocket.path == '/':
+            return await self._client_handler(websocket)
+        elif websocket.path == '/ui':
+            return await self._ui_handler(websocket)
+
+        raise websockets.InvalidURI(websocket.path, f'Invalid path: {websocket.path}')
+
+    async def _ui_handler(self, websocket: websockets.WebSocketServerProtocol) -> None:
+        """Handle websocket connection from the UI.
+
+        Args:
+            websocket: Websocket connection on path '/ui'.
+        """
+        logger.info('UI connected')
+        self._ui_connection = websocket
+        try:
+            await websocket.wait_closed()
+        finally:
+            self._ui_connection = None
+
+    async def _client_handler(self, websocket: websockets.WebSocketServerProtocol) -> None:
+        """Handle websocket connection from the buttplug client.
+
+        Args:
+            websocket: Websocket connection on path '/'.
+        """
+        logger.info('Client connected')
         async for request in websocket:
             logger.info(f'<<<: {request!r}')
             try:
@@ -118,15 +152,30 @@ class NoButtServer:
                 ),
             )
         elif message.scalar_cmd is not None:
+            if self._ui_connection is not None:
+                await self._ui_connection.send(message.model_dump_json(by_alias=True, exclude_none=True))
+
             return MessageSpecV3Item(
                 Ok=ClientIdMessage(
                     Id=message.scalar_cmd.id,
                 ),
             )
         elif message.stop_device_cmd is not None:
+            if self._ui_connection is not None:
+                await self._ui_connection.send(message.model_dump_json(by_alias=True, exclude_none=True))
+
             return MessageSpecV3Item(
                 Ok=ClientIdMessage(
                     Id=message.stop_device_cmd.id,
+                ),
+            )
+        elif message.stop_all_devices is not None:
+            if self._ui_connection is not None:
+                await self._ui_connection.send(message.model_dump_json(by_alias=True, exclude_none=True))
+
+            return MessageSpecV3Item(
+                Ok=ClientIdMessage(
+                    Id=message.stop_all_devices.root.id,
                 ),
             )
         return MessageSpecV3Item(
