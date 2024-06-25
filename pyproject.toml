@@ -29,8 +29,8 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.flake8]
-max-line-length = 666                     # line length limit is useless when you have John and Cognitive Complexity limits
-extend-ignore = "WPS305"
+max-line-length = 666                     #  line length limit is useless when you have John and Cognitive Complexity limits
+extend-ignore = "WPS305"                  #  I love f-strings
 per-file-ignores = ["tests/**/*: WPS442"]
 
 [tool.isort]

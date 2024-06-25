@@ -1,0 +1,44 @@
+name: test
+
+on:
+    push:
+        branches:
+            - master
+    pull_request:
+    workflow_dispatch:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: 3.12
+
+            - name: Install poetry
+              run: |
+                  curl -sSL "https://install.python-poetry.org" | python
+
+                  # Adding `poetry` to `$PATH`:
+                  echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+
+            - name: Install dependencies
+              run: |
+                  poetry config virtualenvs.in-project true
+                  poetry run pip install -U pip
+                  poetry install
+
+            - name: Run checks
+              run: |
+                  poetry run flake8 .
+                  poetry run mypy .
+                  poetry run pytest
