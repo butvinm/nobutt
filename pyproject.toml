@@ -16,7 +16,7 @@ pydantic = "^2.7.4"
 coverage = "^7.5.3"
 pytest = "^8.2.2"
 mypy = "^1.10.0"
-wemake-python-styleguide = "^0.19.2"
+wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-python-styleguide", branch = "master" }
 flake8-pyproject = "^1.2.3"
 autopep8 = "^2.3.0"
 isort = "^5.13.2"
@@ -29,9 +29,22 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.flake8]
-max-line-length = 666                     #  line length limit is useless when you have John and Cognitive Complexity limits
-extend-ignore = "WPS305"                  #  I love f-strings
+format = "wemake"
+max-line-length = 666 #  line length limit is useless when you have John and Cognitive Complexity limits
+extend-ignore = "WPS305" #  I love f-strings
 per-file-ignores = ["tests/**/*: WPS442"]
+exclude = [
+    ".venv",
+    "hooks",
+    "*.egg",
+    ".eggs",
+    "dist",
+    "build",
+    "docs",
+    ".tox",
+    ".git",
+    "__pycache__",
+]
 
 [tool.isort]
 include_trailing_comma = true
@@ -44,6 +57,19 @@ max-line-length = 666
 [tool.mypy]
 strict = true
 plugins = ["pydantic.mypy"]
+exclude = [
+    ".venv",
+    "hooks",
+    "^.*\\.egg$",
+    ".eggs",
+    "dist",
+    "build",
+    "docs",
+    ".tox",
+    ".git",
+    "__pycache__",
+]
+
 
 [[tool.mypy.overrides]]
 module = "buttplug"
@@ -51,3 +77,17 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+
+[tool.pytest]
+norecursedirs = [
+    ".venv",
+    "hooks",
+    "*.egg",
+    ".eggs",
+    "dist",
+    "build",
+    "docs",
+    ".tox",
+    ".git",
+    "__pycache__",
+]

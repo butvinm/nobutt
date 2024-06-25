@@ -46,17 +46,6 @@ files = [
 test = ["coverage", "mypy", "pexpect", "ruff", "wheel"]
 
 [[package]]
-name = "astor"
-version = "0.8.1"
-description = "Read/rewrite/write Python ASTs"
-optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
-files = [
-    {file = "astor-0.8.1-py2.py3-none-any.whl", hash = "sha256:070a54e890cefb5b3739d19f30f5a5ec840ffc9c50ffa7d23cc9fc1a38ebbfc5"},
-    {file = "astor-0.8.1.tar.gz", hash = "sha256:6a6effda93f4e1ce9f618779b2dd1d9d84f1e32812c23a29b3fff6fd7f63fa5e"},
-]
-
-[[package]]
 name = "attrs"
 version = "23.2.0"
 description = "Classes Without Boilerplate"
@@ -433,17 +422,17 @@ dev = ["coverage", "hypothesis", "hypothesmith (>=0.2)", "pre-commit", "pytest",
 
 [[package]]
 name = "flake8-commas"
-version = "2.1.0"
+version = "4.0.0"
 description = "Flake8 lint for trailing commas."
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "flake8-commas-2.1.0.tar.gz", hash = "sha256:940441ab8ee544df564ae3b3f49f20462d75d5c7cac2463e0b27436e2050f263"},
-    {file = "flake8_commas-2.1.0-py2.py3-none-any.whl", hash = "sha256:ebb96c31e01d0ef1d0685a21f3f0e2f8153a0381430e748bf0bbbb5d5b453d54"},
+    {file = "flake8_commas-4.0.0-py3-none-any.whl", hash = "sha256:cad476d71ba72e8b941a8508d5b9ffb6b03e50f7102982474f085ad0d674b685"},
+    {file = "flake8_commas-4.0.0.tar.gz", hash = "sha256:a68834b42a9a31c94ca790efe557a932c0eae21a3479c6b9a23c4dc077e3ea96"},
 ]
 
 [package.dependencies]
-flake8 = ">=2"
+flake8 = ">=5"
 
 [[package]]
 name = "flake8-comprehensions"
@@ -928,13 +917,13 @@ files = [
 
 [[package]]
 name = "pep8-naming"
-version = "0.13.3"
+version = "0.14.1"
 description = "Check PEP-8 naming conventions, plugin for flake8"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "pep8-naming-0.13.3.tar.gz", hash = "sha256:1705f046dfcd851378aac3be1cd1551c7c1e5ff363bacad707d43007877fa971"},
-    {file = "pep8_naming-0.13.3-py3-none-any.whl", hash = "sha256:1a86b8c71a03337c97181917e2b472f0f5e4ccb06844a0d6f0a33522549e7a80"},
+    {file = "pep8-naming-0.14.1.tar.gz", hash = "sha256:1ef228ae80875557eb6c1549deafed4dabbf3261cfcafa12f773fe0db9be8a36"},
+    {file = "pep8_naming-0.14.1-py3-none-any.whl", hash = "sha256:63f514fc777d715f935faf185dedd679ab99526a7f2f503abb61587877f7b1c5"},
 ]
 
 [package.dependencies]
@@ -1411,35 +1400,38 @@ name = "wemake-python-styleguide"
 version = "0.19.2"
 description = "The strictest and most opinionated python linter ever"
 optional = false
-python-versions = "<4.0,>=3.9"
-files = [
-    {file = "wemake_python_styleguide-0.19.2-py3-none-any.whl", hash = "sha256:d53205dbb629755026d853d15fb3ca03ebb2717c97de4198b5676b9bdc0663bd"},
-    {file = "wemake_python_styleguide-0.19.2.tar.gz", hash = "sha256:850fe70e6d525fd37ac51778e552a121a489f1bd057184de96ffd74a09aef414"},
-]
+python-versions = "^3.9"
+files = []
+develop = false
 
 [package.dependencies]
-astor = ">=0.8,<0.9"
 attrs = "*"
-darglint = ">=1.2,<2.0"
-flake8 = ">=7.0,<8.0"
-flake8-bandit = ">=4.1,<5.0"
-flake8-broken-line = ">=1.0,<2.0"
-flake8-bugbear = ">=24.2,<25.0"
-flake8-commas = ">=2.0,<3.0"
-flake8-comprehensions = ">=3.1,<4.0"
-flake8-debugger = ">=4.0,<5.0"
-flake8-docstrings = ">=1.3,<2.0"
-flake8-eradicate = ">=1.5,<2.0"
-flake8-isort = ">=6.0,<7.0"
-flake8-quotes = ">=3.0,<4.0"
-flake8-rst-docstrings = ">=0.3,<0.4"
-flake8-string-format = ">=0.3,<0.4"
-pep8-naming = ">=0.13,<0.14"
-pygments = ">=2.4,<3.0"
+darglint = "^1.2"
+flake8 = "^7.0"
+flake8-bandit = "^4.1"
+flake8-broken-line = "^1.0"
+flake8-bugbear = "^24.2"
+flake8-commas = ">=2,<5"
+flake8-comprehensions = "^3.1"
+flake8-debugger = "^4.0"
+flake8-docstrings = "^1.3"
+flake8-eradicate = "^1.5"
+flake8-isort = "^6.0"
+flake8-quotes = "^3.0"
+flake8-rst-docstrings = "^0.3"
+flake8-string-format = "^0.3"
+pep8-naming = ">=0.13,<0.15"
+pygments = "^2.4"
 setuptools = "*"
 typing_extensions = ">=4.0,<5.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/wemake-services/wemake-python-styleguide"
+reference = "master"
+resolved_reference = "3d4cbcfa79f4017ca345ce0a7ca8c932882501ed"
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "2c3bb67b4fb0ac16b917af6398872b6639a5afe45f5582ceeaddca80ff3872f2"
+content-hash = "9fe51e399ae808e6c774f1945c232b4b920f877e2cdcb8ff0fe1b5cc56687f9b"
