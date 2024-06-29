@@ -5,7 +5,7 @@
         <title>NoButt Test</title>
         <style>
             :root {
-                --shake-angle: 3deg;
+                --shake-angle: 1deg;
             }
 
             @keyframes shake {
@@ -19,6 +19,7 @@
     <body>
         <div class="wrapper">
             <img id="plug" src="./plug.png" />
+            <p>Current vibration level: <span id="vibration-level">0</span></p>
         </div>
     </body>
 
@@ -36,12 +37,24 @@
             if (message.ScalarCmd && message.ScalarCmd.Scalars) {
                 console.log("Received scalar: ", message.ScalarCmd.Scalars[0].Scalar);
                 plug_vibration_level = message.ScalarCmd.Scalars[0].Scalar;
+
+                // update vibration level
+                document.getElementById("vibration-level").innerText = plug_vibration_level;
+
                 // infinite shaking animation
-                document.getElementById("plug").style.animation = `shake ${(1 - plug_vibration_level) / 2}s infinite`;
+                // set angle
+                document.documentElement.style.setProperty("--shake-angle", `${plug_vibration_level * 10}deg`);
+                document.getElementById("plug").style.animation = `shake ${(1 - plug_vibration_level) / 4}s infinite`;
+
             } else if (message.StopAllDevices || message.StopDevice) {
                 console.log("Received stop command");
                 plug_vibration_level = 0;
+
+                // update vibration level
+                document.getElementById("vibration-level").innerText = plug_vibration_level;
+
                 // stop shaking animation
+                document.documentElement.style.setProperty("--shake-angle", "1deg");
                 document.getElementById("plug").style.animation = "";
             }
         });
