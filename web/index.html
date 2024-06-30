@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>NoButt Test</title>
+    <style>
+      :root {
+        --shake-angle: 3deg;
+      }
+
+      @keyframes shake {
+        0% {
+          transform: rotate(-var(--shake-angle));
+        }
+
+        50% {
+          transform: rotate(var(--shake-angle));
+        }
+
+        100% {
+          transform: rotate(-var(--shake-angle));
+        }
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: white;
+      }
+
+      .page {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .tab-header {
+        display: flex;
+        cursor: pointer;
+        margin: 10px;
+        border-radius: 10px 10px 0 0;
+        background-color: #a881af;
+      }
+
+      .tab-header div {
+        padding: 14px 16px;
+        flex: 1;
+        border-radius: 10px 10px 0 0;
+        text-align: center;
+        transition: 0.25s;
+      }
+
+      .tab-header div:hover {
+        background-color: #9177ae;
+      }
+
+      .tab-header div.active {
+        background-color: #80669d;
+      }
+
+      .tab-content {
+        display: none;
+        padding: 20px;
+        border: 1px solid;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      hr {
+        border-top-color: 1px solid black;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page">
+      <div class="tab-header">
+        <div class="tab-link" data-tab="tab-toy">Toy</div>
+      </div>
+      <hr />
+      <div id="tab-toy" class="tab-content">
+        <img id="plug" src="./resources/plug.png" alt="" />
+      </div>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    // Tab selector script
+    document.addEventListener("DOMContentLoaded", function () {
+      //if we haven't got any tabs we are not able to push it
+      if (length(tabs) <= 1) {
+        return;
+      }
+      const tabs = document.querySelectorAll(".tab-link");
+      const contents = document.querySelectorAll(".tab-content");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", function () {
+          const target = this.getAttribute("data-tab");
+
+          tabs.forEach((t) => t.classList.remove("active"));
+          contents.forEach((c) => c.classList.remove("active"));
+
+          this.classList.add("active");
+          document.getElementById(target).classList.add("active");
+        });
+      });
+
+      tabs[0].classList.add("active");
+      contents[0].classList.add("active");
+    });
+  </script>
+
+  <script type="text/javascript">
+    let plug_vibration_level = 0;
+
+    const socket = new WebSocket("ws://127.0.0.1:12345/ui");
+    console.log("WebSocket created");
+
+    socket.addEventListener("message", function (event) {
+      console.log("Message from server ", event.data);
+
+      const message = JSON.parse(event.data);
+      if (message.ScalarCmd && message.ScalarCmd.Scalars) {
+        console.log("Received scalar: ", message.ScalarCmd.Scalars[0].Scalar);
+        plug_vibration_level = message.ScalarCmd.Scalars[0].Scalar;
+        // infinite shaking animation
+        document.getElementById("plug").style.animation = `shake ${
+          (1 - plug_vibration_level) / 2
+        }s infinite`;
+      } else if (message.StopAllDevices || message.StopDevice) {
+        console.log("Received stop command");
+        plug_vibration_level = 0;
+        // stop shaking animation
+        document.getElementById("plug").style.animation = "";
+      }
+    });
+  </script>
+</html>
