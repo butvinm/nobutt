@@ -1,0 +1,7 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/types/message_version.json",
+    "title": "MessageVersion",
+    "description": " The message version number is based on the protocol version the message was introduced in, and is represented as an unsigned integer.",
+    "const": 3
+}

@@ -1,0 +1,51 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/scalar_cmd.json",
+    "title": "ScalarCmd",
+    "description": "Sets the static level for a feature. For instance, the vibration speed of a vibrator, the oscillating speed of a fucking machine, etc... The Message Attributes for the ScalarCmd message in the DeviceList/DeviceAdded message contain information on the actuator type and description, number of actuators, level ranges, and more.",
+    "type": "object",
+    "required": [
+        "Id",
+        "DeviceIndex",
+        "Scalars"
+    ],
+    "properties": {
+        "Id": {
+            "$ref": "../types/id.json"
+        },
+        "DeviceIndex": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Index of device."
+        },
+        "Scalars": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "Index",
+                    "Scalar",
+                    "ActuatorType"
+                ],
+                "properties": {
+                    "Index": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Index of actuator."
+                    },
+                    "Scalar": {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 1.0,
+                        "description": "Actuator level with a range of [0.0-1.0]."
+                    },
+                    "ActuatorType": {
+                        "type": "string",
+                        "description": "Type of actuator that the user expects to control with this command. This is to make sure that context is correct between the client and server."
+                    }
+                }
+            }
+        }
+    },
+    "additionalProperties": false
+}
