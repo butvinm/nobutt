@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/device_removed.json",
+    "title": "DeviceRemoved",
+    "description": "Sent by the server whenever a device is removed from the system. Can happen at any time after identification.",
+    "type": "object",
+    "required": [
+        "Id",
+        "DeviceIndex"
+    ],
+    "properties": {
+        "Id": {
+            "$ref": "../types/id.json"
+        },
+        "DeviceIndex": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Index used to identify the device when sending Device Messages."
+        }
+    },
+    "additionalProperties": false
+}

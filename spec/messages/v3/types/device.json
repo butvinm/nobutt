@@ -1,0 +1,105 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/types/device.json",
+    "title": "Device",
+    "description": "Represents a device with its properties and messages.",
+    "type": "object",
+    "required": [
+        "DeviceName",
+        "DeviceIndex",
+        "DeviceMessages"
+    ],
+    "definitions": {
+        "StepCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of steps or levels the device can handle."
+        },
+        "FeatureDescriptor": {
+            "type": "string",
+            "description": "Description of the feature."
+        },
+        "ActuatorType": {
+            "type": "string",
+            "description": "Type of actuator, e.g., Vibrate, Linear."
+        }
+    },
+    "properties": {
+        "DeviceName": {
+            "type": "string",
+            "description": "Descriptive name of the device, as taken from the base device configuration file."
+        },
+        "DeviceIndex": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Index used to identify the device when sending Device Messages."
+        },
+        "DeviceMessageTimingGap": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Recommended minimum gap between device commands, in milliseconds. Optional field."
+        },
+        "DeviceDisplayName": {
+            "type": "string",
+            "description": "User provided display name for a device. Optional field."
+        },
+        "DeviceMessages": {
+            "type": "object",
+            "description": "Accepted Device Messages",
+            "properties": {
+                "ScalarCmd": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "StepCount": {
+                                "$ref": "#/definitions/StepCount"
+                            },
+                            "FeatureDescriptor": {
+                                "$ref": "#/definitions/FeatureDescriptor"
+                            },
+                            "ActuatorType": {
+                                "$ref": "#/definitions/ActuatorType"
+                            }
+                        }
+                    }
+                },
+                "LinearCmd": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "StepCount": {
+                                "$ref": "#/definitions/StepCount"
+                            },
+                            "FeatureDescriptor": {
+                                "$ref": "#/definitions/FeatureDescriptor"
+                            },
+                            "ActuatorType": {
+                                "$ref": "#/definitions/ActuatorType"
+                            }
+                        }
+                    }
+                },
+                "RotateCmd": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "StepCount": {
+                                "$ref": "#/definitions/StepCount"
+                            },
+                            "FeatureDescriptor": {
+                                "$ref": "#/definitions/FeatureDescriptor"
+                            },
+                            "ActuatorType": {
+                                "$ref": "#/definitions/ActuatorType"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "additionalProperties": false
+}

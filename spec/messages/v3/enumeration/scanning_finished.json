@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/scanning_finished.json",
+    "title": "ScanningFinished",
+    "description": "Sent by the server once it has stopped scanning on all busses. Since systems may have timeouts that are not controlled by the server, this is a separate message from the StopScanning flow. ScanningFinished can happen without a StopScanning call.",
+    "type": "object",
+    "required": [
+        "Id"
+    ],
+    "properties": {
+        "Id": {
+            "$ref": "../types/id.json"
+        }
+    },
+    "additionalProperties": false
+}

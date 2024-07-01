@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/device_added.json",
+    "title": "DeviceAdded",
+    "description": "Sent by the server whenever a device is added to the system. Can happen at any time after identification stage (i.e. after client is connected), as it is assumed many server implementations will support devices with hotplugging capabilities that do not require specific scanning/discovery sessions.",
+    "type": "object",
+    "required": [
+        "Id",
+        "DeviceName",
+        "DeviceIndex",
+        "DeviceMessages"
+    ],
+    "allOf": [
+        {
+            "$ref": "../types/device.json"
+        }
+    ],
+    "properties": {
+        "Id": {
+            "$ref": "../types/id.json"
+        }
+    },
+    "additionalProperties": false
+}

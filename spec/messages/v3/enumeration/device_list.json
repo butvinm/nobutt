@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/device_list.json",
+    "title": "DeviceList",
+    "description": "Server reply to a client request for a device list.",
+    "type": "object",
+    "required": [
+        "Id",
+        "Devices"
+    ],
+    "properties": {
+        "Id": {
+            "$ref": "../types/id.json"
+        },
+        "Devices": {
+            "type": "array",
+            "items": {
+                "$ref": "../types/device.json"
+            }
+        }
+    },
+    "additionalProperties": false
+}

@@ -1,0 +1,31 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/server_info.json",
+    "title": "ServerInfo",
+    "description": "Sent by server to client, contains information about the server name (optional), template version, and ping time expectations.",
+    "type": "object",
+    "required": [
+        "Id",
+        "MessageVersion",
+        "MaxPingTime"
+    ],
+    "properties": {
+        "Id": {
+            "$ref": "../types/id.json"
+        },
+        "ServerName": {
+            "type": "string",
+            "description": "Name of the server. Can be null (0-length).",
+            "default": ""
+        },
+        "MessageVersion": {
+            "$ref": "../types/message_version.json"
+        },
+        "MaxPingTime": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Maximum interval for pings from the client, in milliseconds. If a client takes longer than this time between sending Ping messages, the server is expected to disconnect."
+        }
+    },
+    "additionalProperties": false
+}

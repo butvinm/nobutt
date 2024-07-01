@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/stop_device_cmd.json",
+    "title": "StopDeviceCmd",
+    "description": "Client request to have the server stop a device from whatever actions it may be taking. This message should be supported by all devices, and the server should know how to stop any device it supports.",
+    "type": "object",
+    "required": [
+        "Id",
+        "DeviceIndex"
+    ],
+    "properties": {
+        "Id": {
+            "$ref": "../types/id.json"
+        },
+        "DeviceIndex": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Index of device to stop."
+        }
+    },
+    "additionalProperties": false
+}

@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/start_scanning.json",
+    "title": "StartScanning",
+    "description": "Client request to have the server start scanning for devices on all busses that it knows about. Useful for protocols like Bluetooth, which require an explicit discovery phase.",
+    "type": "object",
+    "required": [
+        "Id"
+    ],
+    "properties": {
+        "Id": {
+            "$ref": "../types/id.json"
+        }
+    },
+    "additionalProperties": false
+}

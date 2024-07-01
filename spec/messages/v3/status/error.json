@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/error.json",
+    "title": "Error",
+    "description": "Signifies that the previous message sent by the client caused some sort of parsing or processing error on the server.",
+    "type": "object",
+    "required": [
+        "Id",
+        "ErrorMessage",
+        "ErrorCode"
+    ],
+    "properties": {
+        "Id": {
+            "$ref": "../types/id.json"
+        },
+        "ErrorMessage": {
+            "type": "string",
+            "description": "Message describing the error that happened on the server."
+        },
+        "ErrorCode": {
+            "description": "Integer describing the error. Can be used in programs to react accordingly.",
+            "oneOf": [
+                {
+                    "title": "ERROR_UNKNOWN",
+                    "const": 0,
+                    "description": "An unknown error occurred."
+                },
+                {
+                    "title": "ERROR_INIT",
+                    "const": 1,
+                    "description": "Handshake did not succeed."
+                },
+                {
+                    "title": "ERROR_PING",
+                    "const": 2,
+                    "description": "A ping was not sent in the expected time."
+                },
+                {
+                    "title": "ERROR_MSG",
+                    "const": 3,
+                    "description": "A message parsing or permission error occurred."
+                },
+                {
+                    "title": "ERROR_DEVICE",
+                    "const": 4,
+                    "description": "A command sent to a device returned an error."
+                }
+            ]
+        }
+    },
+    "additionalProperties": false
+}

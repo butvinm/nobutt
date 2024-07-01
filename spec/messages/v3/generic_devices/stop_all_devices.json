@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/stop_all_devices.json",
+    "title": "StopAllDevices",
+    "description": "Sent by the client to tell the server to stop all devices. Can be used for emergency situations, on client shutdown for cleanup, etc… While this is considered a Device Message, since it pertains to all currently connected devices, it does not specify a device index (and does not end with 'Cmd').",
+    "type": "object",
+    "required": [
+        "Id"
+    ],
+    "properties": {
+        "Id": {
+            "$ref": "../types/id.json"
+        }
+    },
+    "additionalProperties": false
+}

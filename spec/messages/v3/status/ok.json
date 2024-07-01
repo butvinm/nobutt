@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/ok.json",
+    "title": "Ok",
+    "description": "Signifies that the previous message sent by the client was received and processed successfully by the server.",
+    "type": "object",
+    "required": [
+        "Id"
+    ],
+    "properties": {
+        "Id": {
+            "$ref": "../types/id.json"
+        }
+    },
+    "additionalProperties": false
+}
