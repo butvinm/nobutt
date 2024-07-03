@@ -5,10 +5,7 @@
     "description": "Sent by the server whenever a device is added to the system. Can happen at any time after identification stage (i.e. after client is connected), as it is assumed many server implementations will support devices with hotplugging capabilities that do not require specific scanning/discovery sessions.",
     "type": "object",
     "required": [
-        "Id",
-        "DeviceName",
-        "DeviceIndex",
-        "DeviceMessages"
+        "Id"
     ],
     "allOf": [
         {
