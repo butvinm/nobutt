@@ -30,7 +30,6 @@
       }
 
       .page {
-        display: flex;
         flex-direction: column;
       }
 
@@ -53,11 +52,9 @@
         border-left: 4px solid rgb(255, 197, 71);
         border-right: 4px solid rgb(255, 197, 71);
       }
-
       .tab-header div:hover {
         background-color: #9177ae;
       }
-
       .tab-header div.active {
         background-color: #80669d;
       }
@@ -111,7 +108,6 @@
           rgb(100, 169, 89) 100%
         );
       }
-
       #server-connection-bulb.error {
         border: 2px solid rgb(94, 17, 17);
         background: radial-gradient(
@@ -121,8 +117,31 @@
         );
       }
 
-      #plug {
-        width: 25%;
+      #toy-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-gap: 20px;
+        padding: 20px;
+      }
+
+      .toy-wrapper {
+        background-color: #f0f0f0;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+      }
+      .toy-wrapper:hover {
+        transform: translateY(-5px);
+      }
+      @media (max-width: 768px) {
+        .grid-container {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .plug {
+        max-width: 25%;
       }
 
       #logs {
@@ -145,8 +164,8 @@
         <div class="tab-link" data-tab="tab-log">Log</div>
       </div>
       <hr />
-      <div id="tab-toy" class="tab-content">
-        <img id="plug" src="./resources/plug.png" alt="" />
+      <div id="toy-grid" class="tab-content">
+        <!-- <img id="plug" src="./resources/plug.png" alt="" /> -->
         <div id="logs"></div>
       </div>
     </div>
@@ -202,8 +221,6 @@
 
     socket = new WebSocket("ws://127.0.0.1:12345/ui");
     console.log("WebSocket created");
-
-    handleMessage2(socket);
 
     socket.addEventListener("open", (event) => {
       bulb.classList.add("active");
@@ -262,4 +279,106 @@
   </script>
 
   <script src="index.js"></script>
+  <script type="text/javascript">
+    let toysNumber = 0;
+    class Toy {
+      constructor(containerId) {
+        this.container = document.getElementById(containerId);
+        this.ws = null;
+        toysNumber += 1;
+        this.init();
+      }
+
+      init() {
+        this.createElements();
+        this.initWebSocket();
+      }
+
+      createElements() {
+        this.wrapper = document.createElement("div");
+        this.wrapper.textContent = `Toy ${toysNumber}`;
+        this.wrapper.className = "toy-wrapper";
+
+        this.img = document.createElement("img");
+        this.img.src = "./resources/plug.png";
+        this.img.className = "plug";
+
+        this.wrapper.appendChild(this.img);
+
+        this.container.appendChild(this.wrapper);
+      }
+
+      initWebSocket() {
+        // let plug_vibration_level = 0;
+        // let socket;
+        // let serverIndicatorStages = [
+        //   "Server offline",
+        //   "Server connected",
+        //   "Error",
+        // ];
+        // const bulb = document.getElementById("server-connection-bulb");
+        // socket = new WebSocket("ws://127.0.0.1:12345/ui");
+        // console.log("WebSocket created");
+        // handleMessage2(socket);
+        // socket.addEventListener("open", (event) => {
+        //   bulb.classList.add("active");
+        //   bulb.title = serverIndicatorStages[1];
+        // });
+        // socket.addEventListener("close", (event) => {
+        //   bulb.classList.remove("active");
+        //   bulb.title = serverIndicatorStages[0];
+        // });
+        // socket.addEventListener("error", (event) => {
+        //   bulb.classList.add("error");
+        //   bulb.title = serverIndicatorStages[2];
+        //   console.error("WebSocket error: ", event);
+        //   logToConsole("WebSocket error");
+        //   setTimeout(function () {
+        //     bulb.classList.remove("error");
+        //   }, 500);
+        // });
+        // socket.addEventListener("message", function (event) {
+        //   console.log("Message from server ", event.data);
+        //   logToConsole("Message from server: " + event.data);
+        //   const message = JSON.parse(event.data);
+        //   handleMessage(message);
+        // });
+        // function handleMessage(message) {
+        //   if (message.s)
+        //     if (message.ScalarCmd && message.ScalarCmd.Scalars) {
+        //       handleScalarCmd(message);
+        //     } else if (message.StopAllDevices || message.StopDevice) {
+        //       handleStopCmd(message);
+        //     } else {
+        //       console.warn("Unknown message type: ", message);
+        //     }
+        // }
+        // function handleScalarCmd(message) {
+        //   console.log("Received scalar: ", message.ScalarCmd.Scalars[0].Scalar);
+        //   plug_vibration_level = message.ScalarCmd.Scalars[0].Scalar;
+        //   // infinite shaking animation
+        //   document.getElementById("plug").style.animation = `shake ${
+        //     (1 - plug_vibration_level) / 2
+        //   }s infinite`;
+        // }
+        // function handleStopCmd(message) {
+        //   console.log("Received stop command");
+        //   plug_vibration_level = 0;
+        //   // stop shaking animation
+        //   document.getElementById("plug").style.animation = "";
+        // }
+      }
+    }
+
+    new Toy("toy-grid");
+    new Toy("toy-grid");
+    new Toy("toy-grid");
+    new Toy("toy-grid");
+    new Toy("toy-grid");
+    new Toy("toy-grid");
+    new Toy("toy-grid");
+    new Toy("toy-grid");
+    new Toy("toy-grid");
+    new Toy("toy-grid");
+  </script>
 </html>
