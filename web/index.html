@@ -124,6 +124,12 @@
       #plug {
         width: 25%;
       }
+
+      #logs {
+        padding: 10px;
+        border-radius: 10px;
+        border: 2px solid black;
+      }
     </style>
   </head>
 
@@ -135,14 +141,28 @@
 
       <div class="tab-header">
         <div class="tab-link" data-tab="tab-toy">Toy</div>
+        <div class="tab-link" data-tab="tab-toy-2">Toy 2</div>
+        <div class="tab-link" data-tab="tab-log">Log</div>
       </div>
       <hr />
       <div id="tab-toy" class="tab-content">
         <img id="plug" src="./resources/plug.png" alt="" />
+        <div id="logs"></div>
       </div>
     </div>
   </body>
-
+  <script type="text/javascript">
+    function logToConsole(message) {
+      const consoleElement = document.getElementById("logs");
+      const messageElement = document.createElement("div");
+      messageElement.textContent = message;
+      consoleElement.appendChild(messageElement);
+      consoleElement.scrollTop = consoleElement.scrollHeight; // Прокрутка вниз
+    }
+    logToConsole("Welcome to the console!");
+    logToConsole("This is a second message.");
+    logToConsole("Error: Something went wrong!");
+  </script>
   <script type="text/javascript">
     // Tab selector script
     document.addEventListener("DOMContentLoaded", function () {
@@ -183,6 +203,8 @@
     socket = new WebSocket("ws://127.0.0.1:12345/ui");
     console.log("WebSocket created");
 
+    handleMessage2(socket);
+
     socket.addEventListener("open", (event) => {
       bulb.classList.add("active");
       bulb.title = serverIndicatorStages[1];
@@ -197,6 +219,7 @@
       bulb.classList.add("error");
       bulb.title = serverIndicatorStages[2];
       console.error("WebSocket error: ", event);
+      logToConsole("WebSocket error");
       setTimeout(function () {
         bulb.classList.remove("error");
       }, 500);
@@ -204,20 +227,23 @@
 
     socket.addEventListener("message", function (event) {
       console.log("Message from server ", event.data);
+      logToConsole("Message from server: " + event.data);
 
       const message = JSON.parse(event.data);
       handleMessage(message);
     });
 
     function handleMessage(message) {
-      if (message.ScalarCmd && message.ScalarCmd.Scalars) {
-        handleScalarCmd(message);
-      } else if (message.StopAllDevices || message.StopDevice) {
-        handleStopCmd(message);
-      } else {
-        console.warn("Unknown message type: ", message);
-      }
+      if (message.s)
+        if (message.ScalarCmd && message.ScalarCmd.Scalars) {
+          handleScalarCmd(message);
+        } else if (message.StopAllDevices || message.StopDevice) {
+          handleStopCmd(message);
+        } else {
+          console.warn("Unknown message type: ", message);
+        }
     }
+
     function handleScalarCmd(message) {
       console.log("Received scalar: ", message.ScalarCmd.Scalars[0].Scalar);
       plug_vibration_level = message.ScalarCmd.Scalars[0].Scalar;
@@ -234,4 +260,6 @@
       document.getElementById("plug").style.animation = "";
     }
   </script>
+
+  <script src="index.js"></script>
 </html>
