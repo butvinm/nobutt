@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/error.json",
+    "title": "Error",
+    "description": "Signifies that the previous message sent by the client caused some sort of parsing or processing error on the server.",
+    "type": "object",
+    "required": [
+        "Id",
+        "ErrorMessage",
+        "ErrorCode"
+    ],
+    "properties": {
+        "Id": {
+            "$ref": "../types/id.json"
+        },
+        "ErrorMessage": {
+            "type": "string",
+            "description": "Message describing the error that happened on the server."
+        },
+        "ErrorCode": {
+            "description": "Integer describing the error. Can be used in programs to react accordingly.",
+            "enum": [0, 1, 2, 3, 4]
+        }
+    },
+    "additionalProperties": false
+}

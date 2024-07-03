@@ -1,0 +1,9 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/types/id.json",
+    "title": "Id",
+    "description": "A unique identifier for a message. A value to 0 denotes a System message, meaning a message that will only ever be sent from a server to a client. When the server replies to the message, it will return a message using the same Id as was sent.",
+    "type": "integer",
+    "minimum": 0,
+    "maximum": 4294967295
+}

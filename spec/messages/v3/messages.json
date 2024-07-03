@@ -1,0 +1,61 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/messages.json",
+    "title": "Messages",
+    "description": "Array of the messages sent between the client and server.",
+    "type": "array",
+    "items": {
+        "$ref": "#/definitions/Message"
+    },
+    "definitions": {
+        "Message": {
+            "title": "Message",
+            "description": "A message sent between the client and server.",
+            "properties": {
+                "Ok": {
+                    "$ref": "./status/ok.json"
+                },
+                "Error": {
+                    "$ref": "./status/error.json"
+                },
+                "Ping": {
+                    "$ref": "./status/ping.json"
+                },
+                "RequestServerInfo": {
+                    "$ref": "./handshake/request_server_info.json"
+                },
+                "ServerInfo": {
+                    "$ref": "./handshake/server_info.json"
+                },
+                "StartScanning": {
+                    "$ref": "./enumeration/start_scanning.json"
+                },
+                "StopScanning": {
+                    "$ref": "./enumeration/stop_scanning.json"
+                },
+                "ScanningFinished": {
+                    "$ref": "./enumeration/scanning_finished.json"
+                },
+                "DeviceList": {
+                    "$ref": "./enumeration/device_list.json"
+                },
+                "DeviceAdded": {
+                    "$ref": "./enumeration/device_added.json"
+                },
+                "DeviceRemoved": {
+                    "$ref": "./enumeration/device_removed.json"
+                },
+                "StopDeviceCmd": {
+                    "$ref": "./generic_devices/stop_device_cmd.json"
+                },
+                "StopAllDevices": {
+                    "$ref": "./generic_devices/stop_all_devices.json"
+                },
+                "ScalarCmd": {
+                    "$ref": "./generic_devices/scalar_cmd.json"
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}
