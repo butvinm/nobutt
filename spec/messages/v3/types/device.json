@@ -50,6 +50,7 @@
                 "ScalarCmd": {
                     "type": "array",
                     "items": {
+                        "title": "DeviceMessagesScalarCmd",
                         "type": "object",
                         "properties": {
                             "StepCount": {
@@ -61,12 +62,19 @@
                             "ActuatorType": {
                                 "$ref": "#/definitions/ActuatorType"
                             }
-                        }
+                        },
+                        "required": [
+                            "StepCount",
+                            "FeatureDescriptor",
+                            "ActuatorType"
+                        ],
+                        "additionalProperties": false
                     }
                 },
                 "LinearCmd": {
                     "type": "array",
                     "items": {
+                        "title": "DeviceMessagesLinearCmd",
                         "type": "object",
                         "properties": {
                             "StepCount": {
@@ -78,12 +86,19 @@
                             "ActuatorType": {
                                 "$ref": "#/definitions/ActuatorType"
                             }
-                        }
+                        },
+                        "required": [
+                            "StepCount",
+                            "FeatureDescriptor",
+                            "ActuatorType"
+                        ],
+                        "additionalProperties": false
                     }
                 },
                 "RotateCmd": {
                     "type": "array",
                     "items": {
+                        "title": "DeviceMessagesRotateCmd",
                         "type": "object",
                         "properties": {
                             "StepCount": {
@@ -95,10 +110,17 @@
                             "ActuatorType": {
                                 "$ref": "#/definitions/ActuatorType"
                             }
-                        }
+                        },
+                        "required": [
+                            "StepCount",
+                            "FeatureDescriptor",
+                            "ActuatorType"
+                        ],
+                        "additionalProperties": false
                     }
                 }
-            }
+            },
+            "additionalProperties": false
         }
     },
     "additionalProperties": false

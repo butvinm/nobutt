@@ -54,7 +54,8 @@
                 "ScalarCmd": {
                     "$ref": "./generic_devices/scalar_cmd.json"
                 }
-            }
+            },
+            "additionalProperties": false
         }
     }
 }
