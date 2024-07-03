@@ -21,6 +21,7 @@
         "Scalars": {
             "type": "array",
             "items": {
+                "title": "Scalar",
                 "type": "object",
                 "required": [
                     "Index",
@@ -43,7 +44,8 @@
                         "type": "string",
                         "description": "Type of actuator that the user expects to control with this command. This is to make sure that context is correct between the client and server."
                     }
-                }
+                },
+                "additionalProperties": false
             }
         }
     },
