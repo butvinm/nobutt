@@ -1,0 +1,1 @@
+tsc web/components/*.ts
