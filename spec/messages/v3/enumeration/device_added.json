@@ -5,16 +5,34 @@
     "description": "Sent by the server whenever a device is added to the system. Can happen at any time after identification stage (i.e. after client is connected), as it is assumed many server implementations will support devices with hotplugging capabilities that do not require specific scanning/discovery sessions.",
     "type": "object",
     "required": [
-        "Id"
-    ],
-    "allOf": [
-        {
-            "$ref": "../types/device.json"
-        }
+        "Id",
+        "DeviceName",
+        "DeviceIndex",
+        "DeviceMessages"
     ],
     "properties": {
         "Id": {
             "$ref": "../types/id.json"
+        },
+        "DeviceName": {
+            "$ref": "../types/device.json#/properties/DeviceName",
+            "description": "Descriptive name of the device, as taken from the base device configuration file."
+        },
+        "DeviceIndex": {
+            "$ref": "../types/device.json#/properties/DeviceIndex",
+            "description": "Index used to identify the device when sending Device Messages."
+        },
+        "DeviceMessageTimingGap": {
+            "$ref": "../types/device.json#/properties/DeviceMessageTimingGap",
+            "description": "Recommended minimum gap between device commands, in milliseconds. Optional field."
+        },
+        "DeviceDisplayName": {
+            "$ref": "../types/device.json#/properties/DeviceDisplayName",
+            "description": "User provided display name for a device. Optional field."
+        },
+        "DeviceMessages": {
+            "$ref": "../types/device.json#/properties/DeviceMessages",
+            "description": "Accepted Device Messages",
         }
     },
     "additionalProperties": false
