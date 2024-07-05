@@ -1,6 +1,9 @@
 let toysNumber = 0;
 class Toy {
-  constructor(containerId) {
+  container: HTMLElement | null;
+  wrapper!: HTMLElement;
+  img!: HTMLImageElement;
+  constructor(containerId: string) {
     this.container = document.getElementById(containerId);
     toysNumber += 1;
     this.init();
@@ -14,11 +17,6 @@ class Toy {
     this.wrapper = document.createElement("div");
     this.wrapper.className = "element-wrapper movable-element-wrapper";
 
-    this.closeButton = document.createElement("span");
-    this.closeButton.textContent = "×";
-    this.closeButton.className = "close-button";
-    this.closeButton.addEventListener("click", () => this.remove());
-
     this.wrapper.textContent = `Toy ${toysNumber}`;
 
     this.img = document.createElement("img");
@@ -27,6 +25,10 @@ class Toy {
 
     this.wrapper.appendChild(this.img);
 
+    if (this.container === null) {
+      logToConsole(`Toy-error: initialization error at ${toysNumber}`);
+      return;
+    }
     this.container.appendChild(this.wrapper);
   }
 

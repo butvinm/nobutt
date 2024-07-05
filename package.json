@@ -1,5 +1,11 @@
 {
+  "name": "nobutt",
   "devDependencies": {
-    "quicktype": "^23.0.170"
+    "quicktype": "^23.0.170",
+    "typescript": "^5.5.3"
+  },
+  "scripts": {
+    "json2ts": "sh scripts/json2ts.sh",
+    "build": "sh scripts/ts2js.sh"
   }
 }

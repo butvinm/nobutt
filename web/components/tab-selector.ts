@@ -9,13 +9,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
   tabs.forEach((tab) => {
     tab.addEventListener("click", function () {
-      const target = this.getAttribute("data-tab");
+      const target = tab.getAttribute("data-tab");
+      if (target === null) {
+        logToConsole("Tabs-error: unable to find any data-tab");
+        return;
+      }
 
       tabs.forEach((t) => t.classList.remove("active"));
       contents.forEach((c) => c.classList.add("inactive"));
 
-      this.classList.add("active");
-      document.getElementById(target).classList.remove("inactive");
+      tab.classList.add("active");
+
+      const oldElement = document.getElementById(target);
+      if (oldElement === null) {
+        logToConsole("Tabs-error: unable to find old (inactive) element");
+        return;
+      }
+
+      oldElement.classList.remove("inactive");
     });
   });
 

@@ -1,1 +1,1 @@
-tsc web/components/*.ts
+tsc --outDir web/build
