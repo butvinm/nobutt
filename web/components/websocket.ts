@@ -52,53 +52,48 @@ socket.addEventListener("message", function (event) {
 function handleMessage(message: Message) {
   // Server Indicators Messages
   if (message.Ok) {
-    logToConsole(`handleMessage: ${message.Ok}`);
+    handleOk(message);
   }
-
   if (message.Ping) {
-    logToConsole(`handleMessage: ${message.Ping}`);
+    handlePing(message);
   }
-
   if (message.Error) {
-    logToConsole(`handleMessage: ${message.Error}`);
+    handleError(message);
   }
-
   // Device Messages
   if (message.DeviceAdded) {
-    logToConsole(`handleMessage: ${message.DeviceAdded}`);
+    handleDeviceAdded(message);
   }
   if (message.DeviceList) {
-    logToConsole(`handleMessage: ${message.DeviceList}`);
+    handleDeviceList(message);
   }
   if (message.DeviceRemoved) {
-    logToConsole(`handleMessage: ${message.DeviceRemoved}`);
+    handleDeviceRemoved(message);
   }
-
   // Server Info Messages
   if (message.ServerInfo) {
-    logToConsole(`handleMessage: ${message.ServerInfo}`);
+    handleServerInfo(message);
   }
   if (message.RequestServerInfo) {
-    logToConsole(`handleMessage: ${message.RequestServerInfo}`);
-  }
-  if (message.ScanningFinished) {
-    logToConsole(`handleMessage: ${message.ScanningFinished}`);
+    handleRequestServerInfo(message);
   }
   if (message.StartScanning) {
-    logToConsole(`handleMessage: ${message.StartScanning}`);
+    handleStartScanning(message);
   }
   if (message.StopScanning) {
-    logToConsole(`handleMessage: ${message.StopScanning}`);
+    handleStopScanning(message);
   }
-
+  if (message.ScanningFinished) {
+    handleScanningFinished(message);
+  }
   // Action Messages
   if (message.ScalarCmd) {
-    logToConsole(`handleMessage: ${message.ScalarCmd}`);
+    handleScalarCmd(message);
   }
   if (message.StopDeviceCmd) {
-    logToConsole(`handleMessage: ${message.StopDeviceCmd}`);
+    handleStopDeviceCmd(message);
   }
   if (message.StopAllDevices) {
-    logToConsole(`handleMessage: ${message.StopAllDevices}`);
+    handleStopAllDevices(message);
   }
 }
