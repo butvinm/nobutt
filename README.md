@@ -85,10 +85,14 @@ graph LR
 ```mermaid
 graph LR
     Developer <--> Browser
-    Browser <--> UIAdapter[UI Adapter]
+
+    subgraph Browser
+        NoButtUI[NoButt UI]
+    end
+    Client <--> | Buttplug Protocol | NoButt
+
     subgraph UIAdapter[UI Adapter]
         NoButt[NoButt Server Mock]
     end
-
-    Client <--> | Buttplug Protocol | NoButt
+    NoButtUI <--> | Internal Protocol | UIAdapter
 ```
