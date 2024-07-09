@@ -23,7 +23,7 @@ if (logsElement === null) {
 }
 const consoleInstance = new NobuttConsole(logsElement);
 
-function logToConsole(message: string | null) {
+export function logToConsole(message: string | null) {
   if (consoleInstance.initialized === false) {
     return;
   }

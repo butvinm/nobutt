@@ -1,4 +1,5 @@
 // Tab selector script
+import { logToConsole } from "./console";
 document.addEventListener("DOMContentLoaded", function () {
   const tabs = document.querySelectorAll(".tab-link");
   const contents = document.querySelectorAll(".tab-content");

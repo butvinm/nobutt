@@ -167,6 +167,6 @@ nobutt/spec/**/*
 !nobutt/spec/base.py
 !nobutt/spec/__init__.py
 
-web/**/schema.ts
+web/**/schema/
 web/build/
 node_modules/

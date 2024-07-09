@@ -1,5 +1,6 @@
+import { logToConsole } from "./console";
 let toysNumber = 0;
-class Toy {
+export class Toy {
   container: HTMLElement | null;
   wrapper!: HTMLElement;
   img!: HTMLImageElement;

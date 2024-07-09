@@ -2,10 +2,13 @@
   "name": "nobutt",
   "devDependencies": {
     "quicktype": "^23.0.170",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "vite": "^5.3.3"
   },
   "scripts": {
-    "json2ts": "sh scripts/json2ts.sh",
-    "build": "sh scripts/ts2js.sh"
+    "dev": "vite",
+    "serve": "vite preview",
+    "build": "vite build",
+    "json2ts": "sh scripts/json2ts.sh"
   }
 }

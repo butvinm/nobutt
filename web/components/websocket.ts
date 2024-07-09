@@ -1,7 +1,4 @@
-// import { Message } from "./schema";
-// https://github.com/microsoft/TypeScript/issues/41513
-// I have no idea why but this^ is the only way to import that type:
-type Message = import("./schema").Message;
+import { Messages } from "./schema/messages";
 
 let plug_vibration_level = 0;
 let reconnectInterval = 1000;
