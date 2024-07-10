@@ -1,4 +1,6 @@
-import { Messages } from "./schema/messages";
+import { Message } from "./schema/messages";
+import { logToConsole } from "./console";
+import * as handlers from "./message-handler";
 
 let plug_vibration_level = 0;
 let reconnectInterval = 1000;
@@ -7,7 +9,7 @@ let serverIndicatorStages = ["Server offline", "Server connected", "Error"];
 
 const bulb = document.getElementById("server-connection-bulb");
 
-socket = new WebSocket("ws://127.0.0.1:12345/ui");
+socket = new WebSocket("ws://127.0.0.1:12345");
 console.log("WebSocket created");
 
 socket.addEventListener("open", (event) => {
@@ -22,6 +24,7 @@ socket.addEventListener("close", (event) => {
     bulb.classList.remove("active");
     bulb.title = serverIndicatorStages[0];
   }
+  logToConsole("WebSocket-error: unable to connect with server");
 });
 
 socket.addEventListener("error", (event) => {
@@ -30,7 +33,7 @@ socket.addEventListener("error", (event) => {
     bulb.title = serverIndicatorStages[2];
   }
   console.error("WebSocket error: ", event);
-  logToConsole("WebSocket-error: unable to connect with server");
+  logToConsole(`WebSocket-error: ${event.type.toString()}`);
   setTimeout(function () {
     if (bulb) {
       bulb.classList.remove("error");
@@ -40,57 +43,63 @@ socket.addEventListener("error", (event) => {
 
 socket.addEventListener("message", function (event) {
   console.log("Message from server ", event.data);
-  logToConsole("Message from server: " + event.data);
+  // logToConsole("Message from server: " + event.data);
 
-  const message = JSON.parse(event.data);
-  handleMessage(message);
+  try {
+    const message = JSON.parse(event.data);
+    handleMessage(message);
+  } catch (error) {
+    console.error("Error parsing message: ", error);
+    logToConsole(`Error-parsing-message: ${error}`);
+    logToConsole(`____message: ${event.data}`);
+  }
 });
 
 function handleMessage(message: Message) {
   // Server Indicators Messages
   if (message.Ok) {
-    handleOk(message);
+    handlers.handleOk(message);
   }
   if (message.Ping) {
-    handlePing(message);
+    handlers.handlePing(message);
   }
   if (message.Error) {
-    handleError(message);
+    handlers.handleError(message);
   }
   // Device Messages
   if (message.DeviceAdded) {
-    handleDeviceAdded(message);
+    handlers.handleDeviceAdded(message);
   }
   if (message.DeviceList) {
-    handleDeviceList(message);
+    handlers.handleDeviceList(message);
   }
   if (message.DeviceRemoved) {
-    handleDeviceRemoved(message);
+    handlers.handleDeviceRemoved(message);
   }
   // Server Info Messages
   if (message.ServerInfo) {
-    handleServerInfo(message);
+    handlers.handleServerInfo(message);
   }
   if (message.RequestServerInfo) {
-    handleRequestServerInfo(message);
+    handlers.handleRequestServerInfo(message);
   }
   if (message.StartScanning) {
-    handleStartScanning(message);
+    handlers.handleStartScanning(message);
   }
   if (message.StopScanning) {
-    handleStopScanning(message);
+    handlers.handleStopScanning(message);
   }
   if (message.ScanningFinished) {
-    handleScanningFinished(message);
+    handlers.handleScanningFinished(message);
   }
   // Action Messages
   if (message.ScalarCmd) {
-    handleScalarCmd(message);
+    handlers.handleScalarCmd(message);
   }
   if (message.StopDeviceCmd) {
-    handleStopDeviceCmd(message);
+    handlers.handleStopDeviceCmd(message);
   }
   if (message.StopAllDevices) {
-    handleStopAllDevices(message);
+    handlers.handleStopAllDevices(message);
   }
 }

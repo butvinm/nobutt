@@ -1,14 +1,21 @@
-function handleOk(message: Message) {}
-function handlePing(message: Message) {}
-function handleError(message: Message) {}
-function handleDeviceAdded(message: Message) {}
-function handleDeviceList(message: Message) {}
-function handleDeviceRemoved(message: Message) {}
-function handleServerInfo(message: Message) {}
-function handleRequestServerInfo(message: Message) {}
-function handleScanningFinished(message: Message) {}
-function handleStartScanning(message: Message) {}
-function handleStopScanning(message: Message) {}
-function handleScalarCmd(message: Message) {}
-function handleStopDeviceCmd(message: Message) {}
-function handleStopAllDevices(message: Message) {}
+import { Message } from "./schema/messages";
+import { logToConsole } from "./console";
+
+export function handleOk(message: Message) {
+  logToConsole("Ok: " + JSON.stringify(message.Ok));
+}
+export function handlePing(message: Message) {}
+export function handleError(message: Message) {
+  logToConsole("Error: " + JSON.stringify(message.Error));
+}
+export function handleDeviceAdded(message: Message) {}
+export function handleDeviceList(message: Message) {}
+export function handleDeviceRemoved(message: Message) {}
+export function handleServerInfo(message: Message) {}
+export function handleRequestServerInfo(message: Message) {}
+export function handleScanningFinished(message: Message) {}
+export function handleStartScanning(message: Message) {}
+export function handleStopScanning(message: Message) {}
+export function handleScalarCmd(message: Message) {}
+export function handleStopDeviceCmd(message: Message) {}
+export function handleStopAllDevices(message: Message) {}
