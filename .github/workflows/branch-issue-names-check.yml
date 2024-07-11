@@ -1,0 +1,25 @@
+name: PR Match Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  check-issue-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check Issue Number
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          BRANCH_NAME: ${{ github.head_ref }}
+        run: |
+          ISSUE_NUMBER=$(echo $PR_BODY | grep -oP '(?<=\#)\d+' | head -1)
+          BRANCH_NUMBER=$(echo $BRANCH_NAME | grep -oP '^\d+')
+
+          if [ "$ISSUE_NUMBER" != "$BRANCH_NUMBER" ]; then
+            echo "Issue number in PR comment matches branch number."
+          else
+           echo "Error: Issue number in PR comment ($ISSUE_NUMBER) does not match branch name ($BRANCH_NUMBER)."
+            exit 1
+          fi
