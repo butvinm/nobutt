@@ -5,6 +5,10 @@ commit_msg=$(cat "$commit_msg_file")
 red="\033[1;31m"
 nocolor="\033[0m"
 
+if echo "$commit_msg" | grep -qE "^Merge branch"; then
+    exit 0
+fi
+
 if ! echo "$commit_msg" | grep -qE "^[0-9]+: .+$"; then
     echo -e "${red}Error: Commit message does not match the required format '<issue number>: <commit message>'${nocolor}"
     exit 1
@@ -13,7 +17,7 @@ fi
 branch=$(git rev-parse --abbrev-ref HEAD)
 branch_id=$(echo "$branch" | grep -oE "[0-9]+" | head -n 1)
 
-if [ -n "$branch_id" ] ; then
+if [ -z "$branch_id" ] ; then
     echo -e "${red}Error: Branch does not match the required format '<issue number>-<branch name>'${nocolor}"
     exit 1
 fi
