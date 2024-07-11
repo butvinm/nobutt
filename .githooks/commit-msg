@@ -9,3 +9,20 @@ if ! echo "$commit_msg" | grep -qE "^[0-9]+: .+$"; then
     echo -e "${red}Error: Commit message does not match the required format '<issue number>: <commit message>'${nocolor}"
     exit 1
 fi
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+branch_id=$(echo "$branch" | grep -oE "[0-9]+" | head -n 1)
+
+if [ -n "$branch_id" ] ; then
+    echo -e "${red}Error: Branch does not match the required format '<issue number>-<branch name>'${nocolor}"
+    exit 1
+fi
+
+commit_id=$(echo "$commit_msg" | grep -oE "^[0-9]+")
+
+if [ "$branch_id" != "$commit_id" ]; then
+    echo -e "${red}Error: Commit ID does not match the branch ID${nocolor}"
+    exit 1
+fi
+
+exit 0
