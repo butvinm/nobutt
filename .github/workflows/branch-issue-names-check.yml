@@ -8,7 +8,7 @@ jobs:
   check-issue-branch:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Check Issue Number
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
@@ -17,7 +17,12 @@ jobs:
           # The '(?<=(?:^|\s)#)\d+(?=\s*$|\s+[^\d])' regex checks for first '#<issue-id>' in the PR body
           # If there are symbols without spaces before and after '#<issue-id>' like '#1234:' or '.#1234',
           # it will not be matched. If there are several '#<issue-id>' in the PR body, only the first one
-          # will be matched.
+          # will be matched. 
+          #
+          # !Outdated. That ^ regex is not working properly in Github Actions.
+          #
+          # The '(?<=#)\d+' regex checks for the number after '#' in the PR body ignoring any symbols before
+          # and after it. So 'ad#1234awd' will match '1234'.
           ISSUE_NUMBER=$(echo $PR_BODY | grep -oP '(?<=#)\d+' | head -1)
 
           # The '^0*[1-9]\d*(?=\D|$)|^0(?=\D|$)' regex checks for the first number in the branch name
