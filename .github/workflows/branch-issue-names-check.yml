@@ -33,7 +33,6 @@ jobs:
 
           echo "Issue number: $ISSUE_NUMBER"
           echo "Branch number: $BRANCH_NUMBER"
-          grep --version
 
           if [ "$ISSUE_NUMBER" = "$BRANCH_NUMBER" ]; then
             echo "Issue number in PR comment matches branch number."
