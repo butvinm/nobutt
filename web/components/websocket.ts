@@ -42,9 +42,6 @@ socket.addEventListener("error", (event) => {
 });
 
 socket.addEventListener("message", function (event) {
-  console.log("Message from server ", event.data);
-  // logToConsole("Message from server: " + event.data);
-
   try {
     const message = JSON.parse(event.data);
     handleMessage(message);
