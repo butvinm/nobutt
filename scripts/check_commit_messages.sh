@@ -18,8 +18,8 @@ fi
 
 lgbt_echo "$commits"
 for commit in $commits; do
-    echo "$commit"
-    
+    echo "Commit is: $commit"
+
     if echo "$commit" | grep -qE "^Merge branch"; then
         lgbt_echo "Ignoring merge commit: $commit"
         continue
