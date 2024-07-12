@@ -166,3 +166,7 @@ cython_debug/
 nobutt/spec/**/*
 !nobutt/spec/base.py
 !nobutt/spec/__init__.py
+
+web/**/schema/
+web/build/
+web/node_modules/
