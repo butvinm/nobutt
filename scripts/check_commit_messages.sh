@@ -18,12 +18,12 @@ fi
 
 lgbt_echo "$commits"
 for commit in $commits; do
-    if lgbt_echo "$commit" | grep -qE "^Merge branch"; then
+    if echo "$commit" | grep -qE "^Merge branch"; then
         lgbt_echo "Ignoring merge commit: $commit"
         continue
     fi
 
-    if ! lgbt_echo "$commit" | grep -qE "^[0-9]+: .+$"; then
+    if ! echo "$commit" | grep -qE "^[0-9]+: .+$"; then
         lgbt_echo "Error: Commit message '$commit' does not match the required format '<issue number>: <commit message>'"
         exit 1
     fi
