@@ -1,22 +1,16 @@
 #!/bin/bash
 
-# fix ascii colors in GitHub Actions
-if [ "${TERM:-}" = "" ]; then
-  echo "Setting TERM to dumb" # makes tput happy
-  TERM="dumb"
-fi
-
 lgbt_echo() {
     local message="$1"
     local colors=(
-        "$(tput setaf 1)" # RED
-        "$(tput setaf 3)" # ORANGE
-        "$(tput setaf 11)" # YELLOW
-        "$(tput setaf 2)" # GREEN
-        "$(tput setaf 4)" # BLUE
-        "$(tput setaf 5)" # PURPLE
+        "\033[0;31m" # RED
+        "\033[0;33m" # ORANGE
+        "\033[0;93m" # YELLOW
+        "\033[0;32m" # GREEN
+        "\033[0;34m" # BLUE
+        "\033[0;35m" # PURPLE
     )
-    local NORMAL=$(tput sgr0)
+    local NORMAL="\033[0m"
     local colorized_message=""
     local length=${#message}
 
