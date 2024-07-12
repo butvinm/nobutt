@@ -15,4 +15,7 @@ jobs:
         run: scripts/check_commit_messages.sh
 
       - name: Check branch name
-        run: scripts/check_branch_name.sh ${{ github.event.pull_request.body }} ${{ github.head_ref }}
+        run: |
+            echo "PR body: ${{ github.event.pull_request.body }}"
+            echo "Branch name: ${{ github.head_ref }}"
+            scripts/check_branch_name.sh ${{ github.event.pull_request.body }} ${{ github.head_ref }}
