@@ -1,14 +1,14 @@
 name: Check Branch Name Starts With Issue Number
 
 on:
-  push:
-  pull_request:
-   types: [opened, synchronize]
+    pull_request:
+        types: [opened, synchronize, reopened, edited]
 
-  print_title_of_pr:
-    runs-on: ubuntu-20.04
-    steps:
-    - name : Print Title of PR
-      env:
-          TITLE: ${{ github.event.pull_request.title }}
-      run: echo The Title of your PR is $TITLE
+jobs:
+    print_title_of_pr:
+        runs-on: ubuntu-20.04
+        steps:
+            - name: Print Title of PR
+              env:
+                  TITLE: ${{ github.event.pull_request.title }}
+              run: echo The Title of your PR is $TITLE
