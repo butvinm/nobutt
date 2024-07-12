@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 lgbt_echo() {
     local message="$1"
