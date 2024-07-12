@@ -1,0 +1,13 @@
+name: PR Match Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  check-issue-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check Branch Name
+        run: scripts/check_branch_name.sh ${{ github.event.pull_request.body }} ${{ github.head_ref }}
