@@ -1,17 +1,26 @@
+LGBT_ECHO := ./scripts/toolz.sh lgbt_echo
+
+
 .PHONY: check_prerequisites
 check_prerequisites:
-	@echo "Python version: $(shell python --version)"
-	@echo "Poetry version: $(shell poetry --version)"
-	@echo "Npm version: $(shell npm --version)"
+	@$(LGBT_ECHO) "Python version: $(shell python --version)"
+	@$(LGBT_ECHO) "Poetry version: $(shell poetry --version)"
+	@$(LGBT_ECHO) "Npm version: $(shell npm --version)"
+	@sh ./scripts/check_hooks.sh
+
+
+.PHONY: githooks-setup
+githooks-setup:
+	git config core.hooksPath .githooks
 
 
 .PHONY: install
-install:
+install: githooks-setup
 	poetry install
-	# todo: add npm install
+	npm --prefix web install
 
 
 .PHONY: generate
 generate:
 	poetry run generate
-	# todo: add npm models generation
+	npm --prefix web run json2ts

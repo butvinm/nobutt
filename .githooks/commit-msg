@@ -1,0 +1,34 @@
+#!/bin/sh
+
+cd "$(git rev-parse --show-toplevel)"
+
+. ./scripts/toolz.sh
+
+commit_msg_file=$1
+commit_msg=$(cat "$commit_msg_file")
+
+if echo "$commit_msg" | grep -qE "^Merge branch"; then
+    exit 0
+fi
+
+if ! echo "$commit_msg" | grep -qE "^[0-9]+: .+$"; then
+    lgbt_echo "Error: Commit message does not match the required format '<issue number>: <commit message>'"
+    exit 1
+fi
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+branch_id=$(echo "$branch" | grep -oE "[0-9]+" | head -n 1)
+
+if [ -z "$branch_id" ] ; then
+    lgbt_echo "Error: Branch does not match the required format '<issue number>-<branch name>'"
+    exit 1
+fi
+
+commit_id=$(echo "$commit_msg" | grep -oE "^[0-9]+")
+
+if [ "$branch_id" != "$commit_id" ]; then
+    lgbt_echo "Error: Commit ID does not match the branch ID"
+    exit 1
+fi
+
+exit 0

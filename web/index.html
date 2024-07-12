@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>NoButt Test</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+
+  <body>
+    <div class="page">
+      <div class="options-header">
+        <span class="option" id="server-connection-bulb"></span>
+      </div>
+
+      <div class="tab-header">
+        <div class="tab-link" data-tab="element-grid">Toy</div>
+        <div class="tab-link" data-tab="log-console">Log</div>
+      </div>
+
+      <hr />
+
+      <div id="element-grid" class="tab-content"></div>
+      <div id="log-console" class="tab-content">
+        <div id="logs"></div>
+      </div>
+    </div>
+  </body>
+
+  <script type="module" src="components/console.ts"></script>
+  <script type="module" src="components/tab-selector.ts"></script>
+  <script type="module" src="components/websocket.ts"></script>
+  <script type="module" src="components/message-handler.ts"></script>
+  <script type="module" src="components/toy.ts"></script>
+  <script type="module" src="components/main.ts"></script>
+</html>
