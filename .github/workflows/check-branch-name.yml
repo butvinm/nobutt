@@ -1,18 +1,18 @@
 name: Check Branch Name Starts With Issue Number
 
 on:
-    pull_request:
-        types: [opened, synchronize, reopened, edited]
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
-    print_title_of_pr:
-        runs-on: ubuntu-latest
+  print_title_of_pr:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-            - name: Check Branch Name Starts With Issue Number
-              run: scripts/check_branch_name.sh ${{ github.event.pull_request.body }} ${{ github.head_ref }}
+      - name: Check Branch Name Starts With Issue Number
+        run: scripts/check_branch_name.sh ${{ github.event.pull_request.body }} ${{ github.head_ref }}
