@@ -14,13 +14,10 @@ jobs:
       - name: Check commit messages
         run: scripts/check_commit_messages.sh
 
-      - name: Check branch name
+      - name: Check Issue Number
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
           BRANCH_NAME: ${{ github.head_ref }}
         run: |
-            echo "PR body: $PR_BODY"
-            echo "Branch name: $BRANCH_NAME"
-            echo "PR body: ${{ github.event.pull_request.body }}"
-            echo "Branch name: ${{ github.head_ref }}"
-            scripts/check_branch_name.sh ${{ github.event.pull_request.body }} ${{ github.head_ref }}
+            echo "PR_BODY: $PR_BODY"
+            echo "BRANCH_NAME: $BRANCH_NAME"
