@@ -24,4 +24,7 @@ lgbt_echo() {
     echo -e "$colorized_message"
 }
 
-"$@"
+# if called directly, execute function
+if [ "${BASH_SOURCE[0]}" == "${0}" ]; then
+    "$@"
+fi

@@ -3,9 +3,9 @@ LGBT_ECHO := ./scripts/toolz.sh lgbt_echo
 
 .PHONY: check_prerequisites
 check_prerequisites:
-	@sh $(LGBT_ECHO) "Python version: $(shell python --version)"
-	@sh $(LGBT_ECHO) "Poetry version: $(shell poetry --version)"
-	@sh $(LGBT_ECHO) "Npm version: $(shell npm --version)"
+	@$(LGBT_ECHO) "Python version: $(shell python --version)"
+	@$(LGBT_ECHO) "Poetry version: $(shell poetry --version)"
+	@$(LGBT_ECHO) "Npm version: $(shell npm --version)"
 	@sh ./scripts/check_hooks.sh
 
 
