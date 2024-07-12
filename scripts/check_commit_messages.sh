@@ -16,10 +16,7 @@ if [ -z "$commits" ]; then
     exit 0
 fi
 
-lgbt_echo "$commits"
-while read commit; do
-    echo "Checking commit: $commit"
-
+while IFS= read -r commit; do
     if echo "$commit" | grep -qE "^Merge branch"; then
         lgbt_echo "Ignoring merge commit: $commit"
         continue
@@ -29,6 +26,6 @@ while read commit; do
         lgbt_echo "Error: Commit message '$commit' does not match the required format '<issue number>: <commit message>'"
         exit 1
     fi
-done
+done <<< "$commits"
 
 lgbt_echo "All commit messages are in the correct format."
