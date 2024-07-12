@@ -28,3 +28,5 @@ lgbt_echo() {
 if [ "${BASH_SOURCE[0]}" == "${0}" ]; then
     "$@"
 fi
+
+# :3
