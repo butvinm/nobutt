@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# fix ascii colors in GitHub Actions
+if [ "${TERM:-}" = "" ]; then
+  echo "Setting TERM to dumb" # makes tput happy
+  TERM="dumb"
+fi
+
 lgbt_echo() {
     local message="$1"
     local colors=(
