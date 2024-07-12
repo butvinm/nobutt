@@ -8,7 +8,5 @@ jobs:
     print_title_of_pr:
         runs-on: ubuntu-20.04
         steps:
-            - name: Print Title of PR
-              env:
-                  TITLE: ${{ github.event.pull_request.title }}
-              run: echo The Title of your PR is $TITLE
+            - name: Check Branch Name Starts With Issue Number
+              run: scripts/check_branch_name.sh ${{ github.event.pull_request.body }} ${{ github.head_ref }}

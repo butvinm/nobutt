@@ -11,5 +11,5 @@ jobs:
               with:
                   fetch-depth: 0
 
-            - name: Check commit messages
+            - name: Check Commit Messages Starts With Issue Number
               run: scripts/check_commit_messages.sh
