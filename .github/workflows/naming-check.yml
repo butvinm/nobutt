@@ -15,4 +15,4 @@ jobs:
         run: scripts/check_commit_messages.sh
 
       - name: Check branch name
-        run: scripts/check_branch_name.sh "$PR_BODY" "$BRANCH_NAME"
+        run: scripts/check_branch_name.sh $PR_BODY $BRANCH_NAME
