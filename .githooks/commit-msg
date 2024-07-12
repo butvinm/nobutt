@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. ./scripts/toolz.sh
+# . ./scripts/toolz.sh
 
 commit_msg_file=$1
 commit_msg=$(cat "$commit_msg_file")
