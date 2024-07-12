@@ -169,4 +169,4 @@ nobutt/spec/**/*
 
 web/**/schema/
 web/build/
-node_modules/
+web/node_modules/

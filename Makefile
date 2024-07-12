@@ -8,10 +8,10 @@ check_prerequisites:
 .PHONY: install
 install:
 	poetry install
-	# todo: add npm install
+	npm --prefix web install
 
 
 .PHONY: generate
 generate:
 	poetry run generate
-	# todo: add npm models generation
+	npm --prefix web run json2ts

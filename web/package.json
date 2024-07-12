@@ -9,6 +9,6 @@
     "dev": "vite",
     "serve": "vite preview",
     "build": "vite build",
-    "json2ts": "sh scripts/json2ts.sh"
+    "json2ts": "sh ../scripts/json2ts.sh"
   }
 }

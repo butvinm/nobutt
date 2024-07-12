@@ -9,11 +9,7 @@ generateType() {
     local schema_file=$1
     local output_file=$2
     echo "Generating ${output_file} from specification at ${schema_file}"
-    ./node_modules/.bin/quicktype -s schema "$schema_file" -o "$output_file"  > /dev/null 2>&1
-
-    if [ ! -s "$output_file" ]; then
-        rm -f "$output_file"
-    fi
+    web/node_modules/.bin/quicktype -s schema "$schema_file" -o "$output_file"  > /dev/null 2>&1
 }
 
 # Basic function for receiving and processing JSON schemas
