@@ -21,12 +21,12 @@ echo "Issue number: $ISSUE_NUMBER"
 echo "Branch number: $BRANCH_NUMBER"
 
 if [ -z "$ISSUE_NUMBER" ]; then
-    echo "Error: No issue number found in PR comment."
+    echo "Error: No issue number found in PR comment. PR comment must contain a reference to an issue in the format '#<issue number>'."
     exit 1
 fi
 
 if [ -z "$BRANCH_NUMBER" ]; then
-    echo "Error: No issue number found in branch name."
+    echo "Error: No issue number found in branch name. Required format: '<issue number>-<description>'."
     exit 1
 fi
 
