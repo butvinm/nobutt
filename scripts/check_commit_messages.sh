@@ -8,7 +8,8 @@ lgbt_echo "Base branch is $base_branch"
 
 commits=$(git log origin/$base_branch..HEAD --pretty=format:'%s')
 
-lgbt_echo "Commits: $commits"
+lgbt_echo "Commits:"
+lgbt_echo "$commits"
 
 if [ -z "$commits" ]; then
     lgbt_echo "No new commits found"
