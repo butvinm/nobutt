@@ -1,3 +1,7 @@
+# GitHub variables are passed as arguments to the script
+PR_BODY=$1
+BRANCH_NAME=$2
+
 # The '(?<=(?:^|\s)#)\d+(?=\s*$|\s+[^\d])' regex checks for first '#<issue-id>' in the PR body
 # If there are symbols without spaces before and after '#<issue-id>' like '#1234:' or '.#1234',
 # it will not be matched. If there are several '#<issue-id>' in the PR body, only the first one
