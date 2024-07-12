@@ -14,7 +14,7 @@ jobs:
       - name: Get pushed commits
         id: get_commits
         run: |
-          commits=$(git log ${{ github.event.before }}..${{ github.event.after }} --pretty=format:'%s')
+          git log ${{ github.event.before }}..${{ github.event.after }} --pretty=format:"%s"
           echo "commits=$commits" >> $GITHUB_OUTPUT
 
       - name: Check commit messages
