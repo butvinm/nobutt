@@ -18,4 +18,4 @@ jobs:
           echo "commits=$commits" >> $GITHUB_OUTPUT
 
       - name: Check commit messages
-        run: sh scripts/check_commit_messages.sh
+        run: scripts/check_commit_messages.sh
