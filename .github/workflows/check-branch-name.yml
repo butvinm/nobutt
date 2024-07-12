@@ -15,4 +15,7 @@ jobs:
           fetch-depth: 0
 
       - name: Check Branch Name Starts With Issue Number
-        run: scripts/check_branch_name.sh ${{ github.event.pull_request.body }} ${{ github.head_ref }}
+        run: |
+          echo ${{ github.event.pull_request.body }}
+          echo ${{ github.head_ref }}
+          scripts/check_branch_name.sh ${{ github.event.pull_request.body }} ${{ github.head_ref }}
