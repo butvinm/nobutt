@@ -17,8 +17,8 @@ if [ -z "$commits" ]; then
 fi
 
 lgbt_echo "$commits"
-for commit in $commits; do
-    echo "Commit is: $commit"
+while read commit; do
+    echo "Checking commit: $commit"
 
     if echo "$commit" | grep -qE "^Merge branch"; then
         lgbt_echo "Ignoring merge commit: $commit"
