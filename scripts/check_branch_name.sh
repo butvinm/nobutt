@@ -19,6 +19,17 @@ ISSUE_NUMBER=$(echo $PR_BODY | grep -oP '(?<=#)\d+' | head -1)
 BRANCH_NUMBER=$(echo $BRANCH_NAME | grep -oP '^0*[1-9]\d*(?=\D|$)|^0(?=\D|$)')
 echo "Issue number: $ISSUE_NUMBER"
 echo "Branch number: $BRANCH_NUMBER"
+
+if [ -z "$ISSUE_NUMBER" ]; then
+    echo "Error: No issue number found in PR comment."
+    exit 1
+fi
+
+if [ -z "$BRANCH_NUMBER" ]; then
+    echo "Error: No issue number found in branch name."
+    exit 1
+fi
+
 if [ "$ISSUE_NUMBER" = "$BRANCH_NUMBER" ]; then
     echo "Issue number in PR comment matches branch number."
 else
