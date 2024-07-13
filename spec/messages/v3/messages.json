@@ -36,6 +36,9 @@
                 "ScanningFinished": {
                     "$ref": "./enumeration/scanning_finished.json"
                 },
+                "RequestDeviceList": {
+                    "$ref": "./enumeration/request_device_list.json"
+                },
                 "DeviceList": {
                     "$ref": "./enumeration/device_list.json"
                 },
