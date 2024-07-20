@@ -9,7 +9,7 @@ generateType() {
     local schema_file=$1
     local output_file=$2
     echo "Generating ${output_file} from specification at ${schema_file}"
-    web/node_modules/.bin/quicktype -s schema "$schema_file" -o "$output_file"  > /dev/null 2>&1
+    NODE_NO_WARNINGS=1 web/node_modules/.bin/quicktype -s schema "$schema_file" -o "$output_file"
 }
 
 # Basic function for receiving and processing JSON schemas
@@ -30,3 +30,4 @@ getTypes() {
 cd "$(dirname "$0")/../"
 echo "Generating TypeScript from Buttplug.io and NoButt specifications"
 getTypes
+sleep 1.5 # Wait for the error output to finish
