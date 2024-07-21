@@ -9,7 +9,7 @@ generateType() {
     local schema_file=$1
     local output_file=$2
     echo "Generating ${output_file} from specification at ${schema_file}"
-    NODE_NO_WARNINGS=1 web/node_modules/.bin/quicktype -s schema "$schema_file" -o "$output_file"
+    NODE_OPTIONS="--no-deprecation" web/node_modules/.bin/quicktype -s schema "$schema_file" -o "$output_file"
 }
 
 # Basic function for receiving and processing JSON schemas
@@ -20,14 +20,15 @@ getTypes() {
     find "$schema_directory" -name "*.json" | while read -r schema_file; do
         local output_file="${ts_output_directory}/$(basename -- "${schema_file%.json}.ts")"
         generateType "$schema_file" "$output_file" &
-        ((++jobcount % 30 == 0)) && wait
     done
-
     wait
 }
 
 # Go to the root directory of the project to generate TypeScript from schemas
 cd "$(dirname "$0")/../"
 echo "Generating TypeScript from Buttplug.io and NoButt specifications"
+
 getTypes
-sleep 1.5 # Wait for the error output to finish
+# in my zsh terminal background jobs somehow corrupt the terminal behavior and simple `wait` doesn't work
+# if someone knows how to fix this, please let me know :3
+sleep 3
