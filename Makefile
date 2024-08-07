@@ -24,3 +24,9 @@ install: githooks-setup
 generate:
 	poetry run generate
 	npm --prefix web run json2ts
+
+
+.PHONY: python-coverage
+python-coverage:
+	poetry run coverage run -m pytest tests/unit
+	poetry run coverage html

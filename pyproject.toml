@@ -15,11 +15,12 @@ websockets = "^12.0"
 pydantic = "^2.7.4"
 
 
+pytest-timeout = "^2.3.1"
 [tool.poetry.group.dev.dependencies]
 coverage = "^7.5.3"
 pytest = "^8.2.2"
-mypy = "^1.10.0"
-wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-python-styleguide", branch = "master" }
+mypy = { git = "https://github.com/python/mypy", branch = "master" }                                                  # We use a trunk version to have support of the new type aliases syntax. We will go back to release version as soon as all necessary features would be supported.
+wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-python-styleguide", branch = "master" } # We use  a trunk version to bump flake8-commas version. Waiting for the next release.
 flake8-pyproject = "^1.2.3"
 autopep8 = "^2.3.0"
 isort = "^5.13.2"
@@ -33,9 +34,15 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.flake8]
 format = "wemake"
+
 max-line-length = 666 #  line length limit is useless when you have John and Cognitive Complexity limits
-extend-ignore = "WPS305" #  I love f-strings
-per-file-ignores = ["tests/**/*: WPS442"]
+extend-ignore = "WPS305" #  I love f-strings :3
+per-file-ignores = [
+    # D: tests is a documentation, who need the documentation inside the documentation?
+    # WPS442: pytest.raises requires out-of-scope variable usage
+    # S101: asserts
+    "tests/*: D, WPS442, S101",
+]
 exclude = [
     ".venv",
     "hooks",
@@ -47,8 +54,9 @@ exclude = [
     ".tox",
     ".git",
     "__pycache__",
-    "nobutt/spec",
+    "nobutt/spec/messages",
 ]
+show_violation_links = true
 
 [tool.isort]
 include_trailing_comma = true
@@ -61,6 +69,7 @@ max-line-length = 666
 [tool.mypy]
 strict = true
 plugins = ["pydantic.mypy"]
+enable_incomplete_feature = "NewGenericSyntax"
 exclude = [
     ".venv",
     "hooks",
@@ -72,7 +81,7 @@ exclude = [
     ".tox",
     ".git",
     "__pycache__",
-    "nobutt/spec",
+    "nobutt/spec/messages",
 ]
 
 
@@ -96,3 +105,7 @@ norecursedirs = [
     ".git",
     "__pycache__",
 ]
+
+[tool.coverage.run]
+branch = true
+source = ["nobutt"]

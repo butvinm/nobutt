@@ -21,7 +21,7 @@ def main() -> None:
         input_file_type=InputFileType.JsonSchema,
         output=output,
         output_model_type=DataModelType.PydanticV2BaseModel,
-        use_annotated=True,
+        use_annotated=False,  # I prefer Annotated usage, but mypy struggles with it
         field_constraints=True,
         use_subclass_enum=True,
         use_union_operator=True,
@@ -32,5 +32,4 @@ def main() -> None:
         use_title_as_name=True,
         snake_case_field=False,
         target_python_version=PythonVersion.PY_312,
-        base_class='nobutt.spec.base.BaseMessageModel',
     )
