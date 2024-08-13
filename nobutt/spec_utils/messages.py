@@ -19,7 +19,7 @@ def unwrap_message(raw_message: Message) -> MessageType:
         Not-none message field or none if any found.
     """
     if not raw_message.model_fields_set:
-        raise ValueError('Message doesn`t contains message field.')
+        raise ValueError('Message doesn`t contains any message field.')
 
     if len(raw_message.model_fields_set) > 1:
         raise ValueError('Message contains more than 1 not-none message field.')

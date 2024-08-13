@@ -108,4 +108,4 @@ norecursedirs = [
 
 [tool.coverage.run]
 branch = true
-source = ["nobutt"]
+source = ["nobutt", "tests"]

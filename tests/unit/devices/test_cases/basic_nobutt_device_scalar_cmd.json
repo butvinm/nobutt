@@ -1,0 +1,109 @@
+[
+    {
+        "ids": "No scalar actuators, no scalars",
+        "actuators_count": 0,
+        "actuator_results_mock": {},
+        "cmd": {
+            "Id": 666,
+            "DeviceIndex": 666,
+            "Scalars": []
+        },
+        "expected_result": {}
+    },
+    {
+        "ids": "No scalars",
+        "actuators_count": 2,
+        "actuator_results_mock": {},
+        "cmd": {
+            "Id": 666,
+            "DeviceIndex": 666,
+            "Scalars": []
+        },
+        "expected_result": {}
+    },
+    {
+        "ids": "Scalar index out of scalar actuators range",
+        "actuators_count": 0,
+        "actuator_results_mock": {},
+        "cmd": {
+            "Id": 666,
+            "DeviceIndex": 666,
+            "Scalars": [
+                {
+                    "Index": 0,
+                    "Scalar": 0,
+                    "ActuatorType": "Vibrate"
+                }
+            ]
+        },
+        "expected_result": {
+            "ErrorCode": 4,
+            "ErrorMessage": "Index out of actuators list: scalar index was 0, but there are only 0 actuators"
+        }
+    },
+    {
+        "ids": "All results are Ok",
+        "actuators_count": 2,
+        "actuator_results_mock": {
+            "0": {},
+            "1": {}
+        },
+        "cmd": {
+            "Id": 666,
+            "DeviceIndex": 666,
+            "Scalars": [
+                {
+                    "Index": 0,
+                    "Scalar": 0,
+                    "ActuatorType": "Vibrate"
+                },
+                {
+                    "Index": 1,
+                    "Scalar": 0,
+                    "ActuatorType": "Vibrate"
+                }
+            ]
+        },
+        "expected_result": {}
+    },
+    {
+        "ids": "Some results are Error",
+        "actuators_count": 3,
+        "actuator_results_mock": {
+            "1": {
+                "ErrorCode": 4,
+                "ErrorMessage": "Error from actuator 0"
+            },
+            "0": {},
+            "2": {
+                "ErrorCode": 4,
+                "ErrorMessage": "Error from actuator 2"
+            }
+        },
+        "cmd": {
+            "Id": 666,
+            "DeviceIndex": 666,
+            "Scalars": [
+                {
+                    "Index": 0,
+                    "Scalar": 0,
+                    "ActuatorType": "Vibrate"
+                },
+                {
+                    "Index": 1,
+                    "Scalar": 0,
+                    "ActuatorType": "Vibrate"
+                },
+                {
+                    "Index": 2,
+                    "Scalar": 0,
+                    "ActuatorType": "Vibrate"
+                }
+            ]
+        },
+        "expected_result": {
+            "ErrorCode": 4,
+            "ErrorMessage": "Error from actuator 0; Error from actuator 2"
+        }
+    }
+]

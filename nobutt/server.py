@@ -1,187 +1,188 @@
-"""NoButt Server."""
+"""NoButt implementation of the Buttplug Server."""
 
-import logging
-from typing import AsyncContextManager
+import asyncio
+from typing import Any, AsyncGenerator, Iterable
 
-import websockets
+import websockets as ws
 from pydantic import ValidationError
 
-from nobutt.device import NoButtDevice
-from nobutt.messages import (
-    ClientIdMessage,
-    DeviceListModel2,
-    Error,
-    MessageSpecV3,
-    MessageSpecV3Item,
-    ServerInfoModel,
+from nobutt.devices.device import NoButtDevice
+from nobutt.spec.messages.v3.enumeration.device_added import DeviceAdded
+from nobutt.spec.messages.v3.enumeration.device_list import DeviceList
+from nobutt.spec.messages.v3.enumeration.request_device_list import (
+    RequestDeviceList,
+)
+from nobutt.spec.messages.v3.enumeration.scanning_finished import (
+    ScanningFinished,
+)
+from nobutt.spec.messages.v3.enumeration.start_scanning import StartScanning
+from nobutt.spec.messages.v3.enumeration.stop_scanning import StopScanning
+from nobutt.spec.messages.v3.generic_devices.scalar_cmd import ScalarCmd
+from nobutt.spec.messages.v3.generic_devices.stop_all_devices import (
+    StopAllDevices,
+)
+from nobutt.spec.messages.v3.generic_devices.stop_device_cmd import (
+    StopDeviceCmd,
+)
+from nobutt.spec.messages.v3.handshake.request_server_info import (
+    RequestServerInfo,
+)
+from nobutt.spec.messages.v3.handshake.server_info import ServerInfo
+from nobutt.spec.messages.v3.messages import Message, Messages
+from nobutt.spec.messages.v3.status.error import Error
+from nobutt.spec.messages.v3.status.ok import Ok
+from nobutt.spec_utils.messages import pack_messages, unwrap_message
+from nobutt.spec_utils.result import compose_results
+from nobutt.spec_utils.types import (
+    SYSTEM_MESSAGE_ID,
+    ErrorCode,
+    MessageType,
+    MessageVersion,
 )
 
-logger = logging.getLogger(__name__)
+_DefaultDevices: Any = object()
 
 
 class NoButtServer:
-    """NoButt Server.
+    """Buttplug server mock.
 
-    Current implementation only supports v3 of the buttplug.io message protocol.
+    Communicate with clients via websockets using Buttplug protocol
+    and correspondingly maintain state of the virtual devices.
     """
 
-    def __init__(self, port: int = 12345, devices: list[NoButtDevice] | None = None):
-        """Initialize the NoButt Server.
+    def __init__(
+        self,
+        devices: Iterable[NoButtDevice] = _DefaultDevices,
+        port: int = 12345,
+    ) -> None:
+        """Initialize server.
 
         Args:
-            port: Port to listen for connections. Default is 12345.
-            devices: List of devices to serve. Default is an empty list.
+            port: Websocket port server listens on. Buttplug default port is 12345.
+            devices: Initial virtual devices list. Default is empty.
         """
-        self.port = port
-        self.devices = devices or []
-        self._ui_connection: websockets.WebSocketServerProtocol | None = None
+        self._port = port
+        self._devices = [] if devices is _DefaultDevices else list(devices)
+        self._clients: set[ws.WebSocketServerProtocol] = set()
 
-    def serve(self) -> AsyncContextManager[websockets.WebSocketServer]:
-        """Start the NoButt Server.
-
-        Example:
-            async with server.serve():
-                await asyncio.Future()  # run forever
+    def serve(self) -> ws.serve:
+        """Start NoButt server.
 
         Returns:
-            Async context manager as websockets.serve returns.
+            Instance of websockets.serve that can be used as a context manager.
         """
-        return websockets.serve(self._ws_handler, 'localhost', self.port)
+        return ws.serve(self._connection_handler, host='localhost', port=self._port)
 
-    async def _ws_handler(self, websocket: websockets.WebSocketServerProtocol) -> None:
-        """Handle websocket connection.
+    async def add_device(self, device: NoButtDevice) -> None:
+        """Add virtual device to the server.
 
         Args:
-            websocket: Websocket connection.
-
-        Raises:
-            InvalidURI: If the path is not '/' or '/ui'.
-
-        Returns:
-            Nothing, stupid flake8.
+            device: Virtual device.
         """
-        if websocket.path == '/':
-            return await self._client_handler(websocket)
-        elif websocket.path == '/ui':
-            return await self._ui_handler(websocket)
+        self._devices.append(device)
+        # ???
+        if self._clients:
+            response = DeviceAdded(Id=SYSTEM_MESSAGE_ID, **device.spec.model_dump())
+            ws.broadcast(self._clients, pack_messages(response))
 
-        raise websockets.InvalidURI(websocket.path, f'Invalid path: {websocket.path}')
-
-    async def _ui_handler(self, websocket: websockets.WebSocketServerProtocol) -> None:
-        """Handle websocket connection from the UI.
+    async def _connection_handler(self, client: ws.WebSocketServerProtocol) -> None:
+        """Register new client connection.
 
         Args:
-            websocket: Websocket connection on path '/ui'.
+            client: New client connection.
         """
-        logger.info('UI connected')
-        self._ui_connection = websocket
+        self._clients.add(client)
+        async for request_data in client:
+            await self._request_handler(client, request_data)
+
+    async def _request_handler(self, client: ws.WebSocketServerProtocol, request_data: ws.Data) -> None:
+        """Handle client request, validate messages and evaluates corresponding action.
+
+        Args:
+            client: Client connection.
+            request_data: Request data.
+        """
         try:
-            await websocket.wait_closed()
-        finally:
-            self._ui_connection = None
+            messages = Messages.model_validate_json(request_data)
+        except ValidationError as exc:
+            response: MessageType = Error(
+                Id=SYSTEM_MESSAGE_ID,
+                ErrorCode=ErrorCode.error_msg,
+                ErrorMessage=f'Failed to parse messages: {exc}',
+            )
+            await client.send(pack_messages(response))
+        else:
+            # ??? Should we process them simultaneously or sequentially?
+            for raw_message in messages.root:
+                async for response in self._process_message(client, raw_message):
+                    await client.send(pack_messages(response))  # ??? Should we send them all at once or one by one?
 
-    async def _client_handler(self, websocket: websockets.WebSocketServerProtocol) -> None:
-        """Handle websocket connection from the buttplug client.
+    async def _process_message(
+        self,
+        client: ws.WebSocketServerProtocol,
+        raw_message: Message,
+    ) -> AsyncGenerator[MessageType, None]:
+        """Process client request message and produce responses.
 
-        Args:
-            websocket: Websocket connection on path '/'.
-        """
-        logger.info('Client connected')
-        async for request in websocket:
-            logger.info(f'<<<: {request!r}')
-            try:
-                request_messages = MessageSpecV3.model_validate_json(request)
-            except ValidationError as validation_error:
-                logger.error(f'!!!: {validation_error}')
-                response_messages = [MessageSpecV3Item(
-                    Error=Error(
-                        Id=0,
-                        ErrorMessage=f'Invalid JSON: {validation_error}',
-                        ErrorCode=3,
-                    ),
-                )]
-            else:
-                response_messages = [
-                    await self._process_message(message)
-                    for message in request_messages.root
-                ]
-
-            response = MessageSpecV3(root=response_messages).model_dump_json(by_alias=True, exclude_none=True)
-            logger.info(f'>>>: {response}')
-            await websocket.send(response)
-
-    async def _process_message(self, message: MessageSpecV3Item) -> MessageSpecV3Item:
-        """Process a message and return a response message.
+        This method implements actual logic of Buttplug protocol and virtual devices management.
+        Virtual devices behavior depends on the imlementation of the corresponding device object.
 
         Args:
-            message: Message to process.
+            client: Client connection.
+            raw_message: Request message.
 
-        Returns:
-            Response message.
+        Yields:
+            Response messages. See Buttplug protocol specification for details.
         """
-        logger.info(f'...: {message}')
-        if message.request_server_info is not None:
-            return MessageSpecV3Item(
-                ServerInfo=ServerInfoModel(
-                    Id=message.request_server_info.id,
+        message = unwrap_message(raw_message)
+        match message:
+            case RequestServerInfo():
+                yield ServerInfo(
+                    Id=message.Id,
                     ServerName='NoButt',
-                    MessageVersion=3,
+                    MessageVersion=MessageVersion.v3,
                     MaxPingTime=0,
-                ),
-            )
-        elif message.request_device_list is not None:
-            return MessageSpecV3Item(
-                DeviceList=DeviceListModel2(
-                    Id=message.request_device_list.root.id,
-                    Devices=[
-                        device.device_spec
-                        for device in self.devices
-                    ],
-                ),
-            )
-        elif message.start_scanning is not None:
-            return MessageSpecV3Item(
-                Ok=ClientIdMessage(
-                    Id=message.start_scanning.root.id,
-                ),
-            )
-        elif message.stop_scanning is not None:
-            return MessageSpecV3Item(
-                Ok=ClientIdMessage(
-                    Id=message.stop_scanning.root.id,
-                ),
-            )
-        elif message.scalar_cmd is not None:
-            if self._ui_connection is not None:
-                await self._ui_connection.send(message.model_dump_json(by_alias=True, exclude_none=True))
-
-            return MessageSpecV3Item(
-                Ok=ClientIdMessage(
-                    Id=message.scalar_cmd.id,
-                ),
-            )
-        elif message.stop_device_cmd is not None:
-            if self._ui_connection is not None:
-                await self._ui_connection.send(message.model_dump_json(by_alias=True, exclude_none=True))
-
-            return MessageSpecV3Item(
-                Ok=ClientIdMessage(
-                    Id=message.stop_device_cmd.id,
-                ),
-            )
-        elif message.stop_all_devices is not None:
-            if self._ui_connection is not None:
-                await self._ui_connection.send(message.model_dump_json(by_alias=True, exclude_none=True))
-
-            return MessageSpecV3Item(
-                Ok=ClientIdMessage(
-                    Id=message.stop_all_devices.root.id,
-                ),
-            )
-        return MessageSpecV3Item(
-            Error=Error(
-                Id=0,
-                ErrorMessage='Unsupported message type',
-                ErrorCode=3,
-            ),
-        )
+                )
+            case StartScanning():
+                yield Ok(Id=message.Id)
+            case StopScanning():
+                yield Ok(Id=message.Id)
+                yield ScanningFinished(Id=SYSTEM_MESSAGE_ID)
+            case RequestDeviceList():
+                yield DeviceList(
+                    Id=message.Id,
+                    Devices=[device.spec for device in self._devices],
+                )
+            case ScalarCmd():
+                try:
+                    device = self._devices[message.DeviceIndex]
+                except IndexError:
+                    yield Error(
+                        Id=message.Id,
+                        ErrorCode=ErrorCode.error_device,
+                        ErrorMessage=f'Device with index {message.DeviceIndex} not found',
+                    )
+                else:
+                    result = await device.scalar_cmd(message)
+                    yield result.to_message(message.Id)
+            case StopDeviceCmd():
+                try:
+                    device = self._devices[message.DeviceIndex]
+                except IndexError:
+                    yield Error(
+                        Id=message.Id,
+                        ErrorCode=ErrorCode.error_device,
+                        ErrorMessage=f'Device with index {message.DeviceIndex} not found',
+                    )
+                else:
+                    result = await device.stop_device_cmd(message)
+                    yield result.to_message(message.Id)
+            case StopAllDevices():
+                results = await asyncio.gather(*[device.stop_cmd() for device in self._devices])
+                yield compose_results(results).to_message(message.Id)
+            case _:
+                yield Error(
+                    Id=message.Id,
+                    ErrorCode=ErrorCode.error_msg,
+                    ErrorMessage=f'Message is currently unsupported: {message}',
+                )

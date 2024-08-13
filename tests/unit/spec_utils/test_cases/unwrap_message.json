@@ -1,0 +1,16 @@
+[
+    {
+        "ids": "Error message set",
+        "raw_message": {
+            "Error": {"Id": 0, "ErrorCode": 0, "ErrorMessage": ""}
+        },
+        "expected_message": {"Id": 0, "ErrorCode": 0, "ErrorMessage": ""}
+    },
+    {
+        "ids": "ScalarCmd message set",
+        "raw_message": {
+            "ScalarCmd": {"Id": 0, "DeviceIndex": 0, "Scalars": []}
+        },
+        "expected_message": {"Id": 0, "DeviceIndex": 0, "Scalars": []}
+    }
+]

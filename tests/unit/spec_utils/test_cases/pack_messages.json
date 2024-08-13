@@ -1,0 +1,15 @@
+[
+    {
+        "ids": "Empty messages",
+        "messages": [],
+        "expected": "[]"
+    },
+    {
+        "ids": "Some messages",
+        "messages": [
+            {"Id": 0, "DeviceIndex": 0, "Scalars": []},
+            {"Id": 0, "ErrorCode": 0, "ErrorMessage": ""}
+        ],
+        "expected": "[{\"ScalarCmd\":{\"Id\":0,\"DeviceIndex\":0,\"Scalars\":[]}},{\"Error\":{\"Id\":0,\"ErrorMessage\":\"\",\"ErrorCode\":0}}]"
+    }
+]

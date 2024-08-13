@@ -1,6 +1,6 @@
 """Auxiliary types and constants for the specification."""
 
-from enum import Enum
+from enum import IntEnum
 
 from nobutt.spec.messages.v3.enumeration.device_added import DeviceAdded
 from nobutt.spec.messages.v3.enumeration.device_list import DeviceList
@@ -41,7 +41,7 @@ type MessageType = EnumerationMessageType | GenericDevicesMessageType | Handshak
 
 # Either datamodel-codegen does not supports enums or I am doing something wrong, so I have to define it manually.
 
-class MessageVersion(Enum):
+class MessageVersion(IntEnum):
     """Version of the message protocol."""
 
     v0 = 0
@@ -50,7 +50,7 @@ class MessageVersion(Enum):
     v3 = 3
 
 
-class ErrorCode(Enum):
+class ErrorCode(IntEnum):
     """Integer describing the error. Can be used in programs to react accordingly."""
 
     # An unknown error occurred.
