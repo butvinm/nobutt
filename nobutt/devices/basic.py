@@ -59,7 +59,7 @@ class BasicNoButtDevice(NoButtDevice):
         results = await asyncio.gather(*actuator_cmds)
         return compose_results(results)
 
-    async def stop_cmd(self) -> Result:
+    async def stop_device_cmd(self) -> Result:
         """Stop all actuators.
 
         Returns:

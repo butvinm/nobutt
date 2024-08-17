@@ -26,7 +26,7 @@ class NoButtDevice(Protocol):
             cmd: Scalar command as defined in the Buttplug spec.
         """
 
-    async def stop_cmd(self) -> Result:
+    async def stop_device_cmd(self) -> Result:
         """Stop all actuators."""
 
 

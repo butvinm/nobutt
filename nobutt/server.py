@@ -1,14 +1,16 @@
 """NoButt implementation of the Buttplug Server."""
 
 import asyncio
-from typing import Any, AsyncGenerator, Iterable
+from typing import AsyncGenerator, Iterable, Optional
 
 import websockets as ws
 from pydantic import ValidationError
 
 from nobutt.devices.device import NoButtDevice
+from nobutt.exceptions import UnsupportedMessageVersionError
 from nobutt.spec.messages.v3.enumeration.device_added import DeviceAdded
 from nobutt.spec.messages.v3.enumeration.device_list import DeviceList
+from nobutt.spec.messages.v3.enumeration.device_removed import DeviceRemoved
 from nobutt.spec.messages.v3.enumeration.request_device_list import (
     RequestDeviceList,
 )
@@ -28,7 +30,7 @@ from nobutt.spec.messages.v3.handshake.request_server_info import (
     RequestServerInfo,
 )
 from nobutt.spec.messages.v3.handshake.server_info import ServerInfo
-from nobutt.spec.messages.v3.messages import Message, Messages
+from nobutt.spec.messages.v3.messages import Messages
 from nobutt.spec.messages.v3.status.error import Error
 from nobutt.spec.messages.v3.status.ok import Ok
 from nobutt.spec_utils.messages import pack_messages, unwrap_message
@@ -40,8 +42,6 @@ from nobutt.spec_utils.types import (
     MessageVersion,
 )
 
-_DefaultDevices: Any = object()
-
 
 class NoButtServer:
     """Buttplug server mock.
@@ -52,7 +52,7 @@ class NoButtServer:
 
     def __init__(
         self,
-        devices: Iterable[NoButtDevice] = _DefaultDevices,
+        devices: Optional[Iterable[NoButtDevice]] = None,
         port: int = 12345,
     ) -> None:
         """Initialize server.
@@ -61,8 +61,11 @@ class NoButtServer:
             port: Websocket port server listens on. Buttplug default port is 12345.
             devices: Initial virtual devices list. Default is empty.
         """
+        self._devices = {
+            device.spec.DeviceIndex: device
+            for device in devices or []
+        }
         self._port = port
-        self._devices = [] if devices is _DefaultDevices else list(devices)
         self._clients: set[ws.WebSocketServerProtocol] = set()
 
     def serve(self) -> ws.serve:
@@ -76,13 +79,32 @@ class NoButtServer:
     async def add_device(self, device: NoButtDevice) -> None:
         """Add virtual device to the server.
 
+        Notify all clients about the new device.
+
+        If device with the same index already exists, it will be replaced and clients will be notified as well.
+
         Args:
             device: Virtual device.
         """
-        self._devices.append(device)
-        # ???
+        self._devices[device.spec.DeviceIndex] = device
         if self._clients:
             response = DeviceAdded(Id=SYSTEM_MESSAGE_ID, **device.spec.model_dump())
+            ws.broadcast(self._clients, pack_messages(response))
+
+    async def remove_device(self, device_index: int) -> None:
+        """Remove virtual device from the server.
+
+        Notify all clients about the removed device.
+
+        Args:
+            device_index: Index of the device to remove.
+
+        Raises:
+            KeyError: If device with the given index does not exist.
+        """
+        self._devices.pop(device_index)  # implicitly raises KeyError if device not found
+        if self._clients:
+            response = DeviceRemoved(Id=SYSTEM_MESSAGE_ID, DeviceIndex=device_index)
             ws.broadcast(self._clients, pack_messages(response))
 
     async def _connection_handler(self, client: ws.WebSocketServerProtocol) -> None:
@@ -92,8 +114,18 @@ class NoButtServer:
             client: New client connection.
         """
         self._clients.add(client)
-        async for request_data in client:
-            await self._request_handler(client, request_data)
+        try:
+            async for request_data in client:
+                await self._request_handler(client, request_data)
+        except UnsupportedMessageVersionError as exc:
+            response = Error(
+                Id=SYSTEM_MESSAGE_ID,
+                ErrorCode=ErrorCode.error_msg,
+                ErrorMessage=str(exc),
+            )
+            await client.send(pack_messages(response))
+        finally:
+            self._clients.remove(client)
 
     async def _request_handler(self, client: ws.WebSocketServerProtocol, request_data: ws.Data) -> None:
         """Handle client request, validate messages and evaluates corresponding action.
@@ -112,15 +144,16 @@ class NoButtServer:
             )
             await client.send(pack_messages(response))
         else:
-            # ??? Should we process them simultaneously or sequentially?
+            # I am not sure should we process messages one by one or all at once, will figure it out later
             for raw_message in messages.root:
-                async for response in self._process_message(client, raw_message):
-                    await client.send(pack_messages(response))  # ??? Should we send them all at once or one by one?
+                message = unwrap_message(raw_message)
+                async for response in self._process_message(client, message):
+                    await client.send(pack_messages(response))
 
     async def _process_message(
         self,
         client: ws.WebSocketServerProtocol,
-        raw_message: Message,
+        message: MessageType,
     ) -> AsyncGenerator[MessageType, None]:
         """Process client request message and produce responses.
 
@@ -129,14 +162,19 @@ class NoButtServer:
 
         Args:
             client: Client connection.
-            raw_message: Request message.
+            message: Request message.
+
+        Raises:
+            UnsupportedMessageVersionError: If client message version is not v3.
 
         Yields:
             Response messages. See Buttplug protocol specification for details.
         """
-        message = unwrap_message(raw_message)
         match message:
             case RequestServerInfo():
+                if message.MessageVersion.value != MessageVersion.v3.value:
+                    raise UnsupportedMessageVersionError(message.MessageVersion.value)
+
                 yield ServerInfo(
                     Id=message.Id,
                     ServerName='NoButt',
@@ -151,12 +189,11 @@ class NoButtServer:
             case RequestDeviceList():
                 yield DeviceList(
                     Id=message.Id,
-                    Devices=[device.spec for device in self._devices],
+                    Devices=[device.spec for device in self._devices.values()],
                 )
             case ScalarCmd():
-                try:
-                    device = self._devices[message.DeviceIndex]
-                except IndexError:
+                device = self._devices.get(message.DeviceIndex)
+                if device is None:
                     yield Error(
                         Id=message.Id,
                         ErrorCode=ErrorCode.error_device,
@@ -166,23 +203,23 @@ class NoButtServer:
                     result = await device.scalar_cmd(message)
                     yield result.to_message(message.Id)
             case StopDeviceCmd():
-                try:
-                    device = self._devices[message.DeviceIndex]
-                except IndexError:
+                device = self._devices.get(message.DeviceIndex)
+                if device is None:
                     yield Error(
                         Id=message.Id,
                         ErrorCode=ErrorCode.error_device,
                         ErrorMessage=f'Device with index {message.DeviceIndex} not found',
                     )
+                    return
                 else:
-                    result = await device.stop_device_cmd(message)
+                    result = await device.stop_device_cmd()
                     yield result.to_message(message.Id)
             case StopAllDevices():
-                results = await asyncio.gather(*[device.stop_cmd() for device in self._devices])
+                results = await asyncio.gather(*[device.stop_device_cmd() for device in self._devices.values()])
                 yield compose_results(results).to_message(message.Id)
             case _:
                 yield Error(
                     Id=message.Id,
-                    ErrorCode=ErrorCode.error_msg,
-                    ErrorMessage=f'Message is currently unsupported: {message}',
+                    ErrorCode=ErrorCode.error_unknown,
+                    ErrorMessage=f'Unexpected or unsupported message: {message!r}',
                 )

@@ -22,6 +22,10 @@
         "ActuatorType": {
             "type": "string",
             "description": "Type of actuator, e.g., Vibrate, Linear."
+        },
+        "StopDeviceCmd": {
+            "type": "object",
+            "title": "DeviceMessagesStopDeviceCmd"
         }
     },
     "properties": {
@@ -46,6 +50,9 @@
         "DeviceMessages": {
             "type": "object",
             "description": "Accepted Device Messages",
+            "required": [
+                "StopDeviceCmd"
+            ],
             "properties": {
                 "ScalarCmd": {
                     "type": "array",
@@ -71,53 +78,8 @@
                         "additionalProperties": false
                     }
                 },
-                "LinearCmd": {
-                    "type": "array",
-                    "items": {
-                        "title": "DeviceMessagesLinearCmd",
-                        "type": "object",
-                        "properties": {
-                            "StepCount": {
-                                "$ref": "#/definitions/StepCount"
-                            },
-                            "FeatureDescriptor": {
-                                "$ref": "#/definitions/FeatureDescriptor"
-                            },
-                            "ActuatorType": {
-                                "$ref": "#/definitions/ActuatorType"
-                            }
-                        },
-                        "required": [
-                            "StepCount",
-                            "FeatureDescriptor",
-                            "ActuatorType"
-                        ],
-                        "additionalProperties": false
-                    }
-                },
-                "RotateCmd": {
-                    "type": "array",
-                    "items": {
-                        "title": "DeviceMessagesRotateCmd",
-                        "type": "object",
-                        "properties": {
-                            "StepCount": {
-                                "$ref": "#/definitions/StepCount"
-                            },
-                            "FeatureDescriptor": {
-                                "$ref": "#/definitions/FeatureDescriptor"
-                            },
-                            "ActuatorType": {
-                                "$ref": "#/definitions/ActuatorType"
-                            }
-                        },
-                        "required": [
-                            "StepCount",
-                            "FeatureDescriptor",
-                            "ActuatorType"
-                        ],
-                        "additionalProperties": false
-                    }
+                "StopDeviceCmd": {
+                    "$ref": "#/definitions/StopDeviceCmd"
                 }
             },
             "additionalProperties": false

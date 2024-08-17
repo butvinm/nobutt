@@ -28,5 +28,5 @@ generate:
 
 .PHONY: python-coverage
 python-coverage:
-	poetry run coverage run -m pytest tests/unit
+	poetry run coverage run -m pytest tests
 	poetry run coverage html

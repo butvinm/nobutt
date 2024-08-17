@@ -1,5 +1,5 @@
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from pydantic import BaseModel
@@ -13,9 +13,10 @@ from nobutt.spec.messages.v3.types.device import (
     Device,
     DeviceMessagesModel,
     DeviceMessagesScalarCmd,
+    DeviceMessagesStopDeviceCmd,
 )
 from nobutt.spec_utils.result import Error, Ok, Result
-from tests.utils import AsyncMock, parse_test_cases
+from tests.utils import parse_test_cases
 
 CASES = Path(__file__).parent / 'test_cases'
 
@@ -26,7 +27,7 @@ def dummy_device() -> BasicNoButtDevice:
         Device(
             DeviceName='Test Device',
             DeviceIndex=666,
-            DeviceMessages=DeviceMessagesModel(),
+            DeviceMessages=DeviceMessagesModel(StopDeviceCmd=DeviceMessagesStopDeviceCmd()),
         ),
     )
 
@@ -79,7 +80,7 @@ async def test_basic_nobutt_device_scalar_cmd(
     dummy_device: BasicNoButtDevice,
 ) -> None:
     # mock scalar actuators
-    actuators_mocks = [Mock(spec=BasicNoButtScalarActuator) for _ in range(test_case.actuators_count)]
+    actuators_mocks = [MagicMock(spec=BasicNoButtScalarActuator) for _ in range(test_case.actuators_count)]
     for index, result_mock in test_case.actuator_results_mock.items():
         actuators_mocks[index].scalar = AsyncMock(return_value=result_mock)
 
@@ -107,20 +108,20 @@ class BasicNoButtDeviceStopCmdCase(BaseModel):
 
 @pytest.mark.parametrize(
     argnames='test_case',
-    argvalues=parse_test_cases(BasicNoButtDeviceStopCmdCase, CASES / 'basic_nobutt_device_stop.json'),
+    argvalues=parse_test_cases(BasicNoButtDeviceStopCmdCase, CASES / 'basic_nobutt_device_stop_device_cmd.json'),
     ids=lambda test_case: test_case.ids,
 )
-async def test_basic_nobutt_device_stop_cmd(
+async def test_basic_nobutt_device_stop_device_cmd(
     test_case: BasicNoButtDeviceStopCmdCase,
     dummy_device: BasicNoButtDevice,
 ) -> None:
     # mock scalar actuators
-    actuators_mocks = [Mock(spec=BasicNoButtScalarActuator) for _ in range(test_case.actuators_count)]
+    actuators_mocks = [MagicMock(spec=BasicNoButtScalarActuator) for _ in range(test_case.actuators_count)]
     for index, result_mock in test_case.actuator_results_mock.items():
         actuators_mocks[index].stop = AsyncMock(return_value=result_mock)
 
     with patch.object(dummy_device, 'scalar_actuators', actuators_mocks):
-        result = await dummy_device.stop_cmd()
+        result = await dummy_device.stop_device_cmd()
         assert result == test_case.expected_result
         assert all(actuator_mock.stop.called for actuator_mock in actuators_mocks)
 

@@ -4,7 +4,9 @@
         "spec": {
             "DeviceName": "Test Device",
             "DeviceIndex": 666,
-            "DeviceMessages": {}
+            "DeviceMessages": {
+                "StopDeviceCmd": {}
+            }
         }
     },
     {
@@ -13,7 +15,8 @@
             "DeviceName": "Test Device",
             "DeviceIndex": 666,
             "DeviceMessages": {
-                "ScalarCmd": []
+                "ScalarCmd": [],
+                "StopDeviceCmd": {}
             }
         }
     },
@@ -34,7 +37,8 @@
                         "FeatureDescriptor": "Feature 1",
                         "ActuatorType": "Vibrate"
                     }
-                ]
+                ],
+                "StopDeviceCmd": {}
             }
         }
     }
