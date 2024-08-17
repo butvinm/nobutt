@@ -1,0 +1,23 @@
+[
+    {
+        "ids": "Mismatch actuator type",
+        "scalar": {
+            "Index": 666,
+            "Scalar": 0.0,
+            "ActuatorType": "Incorrect actuator type"
+        },
+        "expected_result": {
+            "ErrorCode": 4,
+            "ErrorMessage": "Actuator type mismatch"
+        }
+    },
+    {
+        "ids": "Success set power level",
+        "scalar": {
+            "Index": 666,
+            "Scalar": 0.5,
+            "ActuatorType": "Test Actuator"
+        },
+        "expected_result": {}
+    }
+]

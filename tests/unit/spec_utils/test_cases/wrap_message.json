@@ -1,0 +1,16 @@
+[
+    {
+        "ids": "Wrap Ok message",
+        "message": ["Ok", {"Ok": {"Id": 0}}],
+        "expected_raw_message": {
+            "Ok": {"Id": 0}
+        }
+    },
+    {
+        "ids": "Wrap Error message",
+        "message": ["Error", {"Error": {"Id": 0, "ErrorCode": 4, "ErrorMessage": ""}}],
+        "expected_raw_message": {
+            "Error": {"Id": 0, "ErrorCode": 4, "ErrorMessage": ""}
+        }
+    }
+]

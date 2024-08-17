@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/butvinm/nobutt/tree/master/spec/messages/v3/request_device_list.json",
+    "title": "RequestDeviceList",
+    "description": "Client request to have the server send over its known device list, without starting a full scan.",
+    "type": "object",
+    "required": [
+        "Id"
+    ],
+    "properties": {
+        "Id": {
+            "$ref": "../types/id.json"
+        }
+    },
+    "additionalProperties": false
+}

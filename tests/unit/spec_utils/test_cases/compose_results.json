@@ -1,0 +1,67 @@
+[
+    {
+        "ids": "Empty (considered as Ok)",
+        "results": [],
+        "expected": {}
+    },
+    {
+        "ids": "Single Ok",
+        "results": [
+            {}
+        ],
+        "expected": {}
+    },
+    {
+        "ids": "Single Error",
+        "results": [
+            {
+                "ErrorCode": 0,
+                "ErrorMessage": "Error 0"
+            }
+        ],
+        "expected": {
+            "ErrorCode": 0,
+            "ErrorMessage": "Error 0"
+        }
+    },
+    {
+        "ids": "Many Errors (different codes is UB, but test that first is taken)",
+        "results": [
+            {
+                "ErrorCode": 0,
+                "ErrorMessage": "Error 0"
+            },
+            {
+                "ErrorCode": 1,
+                "ErrorMessage": "Error 1"
+            },
+            {
+                "ErrorCode": 2,
+                "ErrorMessage": "Error 2"
+            }
+        ],
+        "expected": {
+            "ErrorCode": 0,
+            "ErrorMessage": "Error 0; Error 1; Error 2"
+        }
+    },
+    {
+        "ids": "Mixed Ok and Errors",
+        "results": [
+            {
+                "ErrorCode": 0,
+                "ErrorMessage": "Error 0"
+            },
+            {},
+            {
+                "ErrorCode": 1,
+                "ErrorMessage": "Error 1"
+            },
+            {}
+        ],
+        "expected": {
+            "ErrorCode": 0,
+            "ErrorMessage": "Error 0; Error 1"
+        }
+    }
+]

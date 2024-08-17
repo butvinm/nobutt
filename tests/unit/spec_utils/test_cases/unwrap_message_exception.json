@@ -1,0 +1,15 @@
+[
+    {
+        "ids": "None of the messages are sets",
+        "raw_message": {},
+        "expected_error": "Message doesn`t contains any message field."
+    },
+    {
+        "ids": "More than one message is set",
+        "raw_message": {
+            "Ok": {"Id": 0},
+            "Error": {"Id": 0, "ErrorCode": 4, "ErrorMessage": ""}
+        },
+        "expected_error": "Message contains more than 1 not-none message field."
+    }
+]

@@ -1,0 +1,10 @@
+[
+    {
+        "ids": "Basic initialization",
+        "spec": {
+            "StepCount": 1,
+            "FeatureDescriptor": "Basic NoButt Scalar Actuator",
+            "ActuatorType": "Vibrate"
+        }
+    }
+]

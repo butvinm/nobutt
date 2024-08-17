@@ -1,0 +1,45 @@
+[
+    {
+        "ids": "Device messages commands are None",
+        "spec": {
+            "DeviceName": "Test Device",
+            "DeviceIndex": 666,
+            "DeviceMessages": {
+                "StopDeviceCmd": {}
+            }
+        }
+    },
+    {
+        "ids": "Device messages commands are empty",
+        "spec": {
+            "DeviceName": "Test Device",
+            "DeviceIndex": 666,
+            "DeviceMessages": {
+                "ScalarCmd": [],
+                "StopDeviceCmd": {}
+            }
+        }
+    },
+    {
+        "ids": "Some device messages commands",
+        "spec": {
+            "DeviceName": "Test Device",
+            "DeviceIndex": 666,
+            "DeviceMessages": {
+                "ScalarCmd": [
+                    {
+                        "StepCount": 0,
+                        "FeatureDescriptor": "Feature 0",
+                        "ActuatorType": "Vibrate"
+                    },
+                    {
+                        "StepCount": 0,
+                        "FeatureDescriptor": "Feature 1",
+                        "ActuatorType": "Vibrate"
+                    }
+                ],
+                "StopDeviceCmd": {}
+            }
+        }
+    }
+]

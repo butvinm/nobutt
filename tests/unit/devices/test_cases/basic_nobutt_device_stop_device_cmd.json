@@ -1,0 +1,27 @@
+[
+    {
+        "ids": "No actuators",
+        "actuators_count": 0,
+        "actuator_results_mock": {},
+        "expected_result": {}
+    },
+    {
+        "ids": "All actuators successfully stopped",
+        "actuators_count": 2,
+        "actuator_results_mock": {
+            "0": {},
+            "1": {}
+        },
+        "expected_result": {}
+    },
+    {
+        "ids": "Some actuators failed to stop",
+        "actuators_count": 3,
+        "actuator_results_mock": {
+            "0": {"ErrorCode": 4, "ErrorMessage": "Failed to stop actuator 0"},
+            "1": {},
+            "2": {"ErrorCode": 4, "ErrorMessage": "Failed to stop actuator 2"}
+        },
+        "expected_result": {"ErrorCode": 4, "ErrorMessage": "Failed to stop actuator 0; Failed to stop actuator 2"}
+    }
+]
