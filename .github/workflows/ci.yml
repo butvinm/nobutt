@@ -36,6 +36,7 @@ jobs:
                   poetry config virtualenvs.in-project true
                   poetry run pip install -U pip
                   poetry install
+                  make generate
 
             - name: Run checks
               run: |
